@@ -39,6 +39,8 @@ int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]);
 
 int indexBul(const char *dizi,int N,int aranan);
 
+void matrisIndirgeme(int R,int N,int matris[R][N],int sonucMatrisi[R]);
+
 int main(void) {
     int w = 880;
     int h = 480;
@@ -187,12 +189,16 @@ int main(void) {
         int N = bilinmeyenSayisi,R=5;
         int matris[R][N], sonucMatrisi[R];
         char bilinmeyenlerMatrisi[N];
+
+
+
         bilinmeyenlerMatrisiniOlustur(N, bilinmeyenlerMatrisi, yollar, anaYollar);
         matrisSifirla(R,N, matris, sonucMatrisi);
         matrisOlustur(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi, yollar, anaYollar);
         matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
-
-
+        printf("\n\n");
+        matrisIndirgeme(R,N,matris,sonucMatrisi);
+        matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
         al_rest(5.0);
         return 0;
 
@@ -363,6 +369,81 @@ void matrisCiz(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenl
 
 
         }
+
+void matrisIndirgeme(int R,int N,int matris[R][N],int sonucMatrisi[R]){
+int kontrol=0,bosluklarinIndesleri[R-N];
+
+    for (int i = R-1; i >=0 ; i--) {
+       kontrol+=matrisSatirSifirla(R,N,i,matris,sonucMatrisi);
+        if(kontrol==R-N)break;
+    }
+
+
+}
+int matrisSatirSifirla(int R,int N,int matrisSatirIndis,int matris[R][N],int sonucMatrisi[R]){
+
+    int matrisSatirTemp[N],sonucTemp=sonucMatrisi[matrisSatirIndis],kontrol=0,kontrol2=1;
+    for (int i = 0; i <N ; i++) {
+        matrisSatirTemp[i]=matris[matrisSatirIndis][i];
+    }
+
+
+    while(1){
+
+        for (int i = 0; i <N ; i++) {
+          if(matrisSatirTemp[i]!=0){
+              kontrol=0;break;
+          }
+          kontrol=1;
+        }
+        if(kontrol==1)break;
+
+
+        for (int j = 0; j <N ; j++) {
+            if(matrisSatirTemp[j]==0)continue;
+
+
+            for (int i = 0; i <R ; i++) {
+                if(i==matrisSatirIndis)continue;
+
+
+
+                if(matris[i][j]==matrisSatirTemp[j]){
+                    for (int k = 0; k <N ; k++) {
+                        matrisSatirTemp[k]-=matris[i][k];
+                    }
+                    sonucTemp-=sonucMatrisi[i];
+
+                    break; }
+                else if(matris[i][j]==(matrisSatirTemp[j]*(-1))){
+                    for (int k = 0; k <N ; k++) {
+                        matrisSatirTemp[k]+=matris[i][k];
+                    }
+                    sonucTemp+=sonucMatrisi[i];
+                    break;
+
+                }
+                kontrol2++;
+            }
+            if(kontrol2==R)return -1;
+            else kontrol2=0;
+
+
+        }
+
+
+        }
+
+
+
+    for (int l = 0; l <N ; ++l) {
+        matris[matrisSatirIndis][l]=matrisSatirTemp[l];
+
+    }
+sonucMatrisi[matrisSatirIndis]=sonucTemp;
+
+return 1;
+}
 //dugumCoz(N,i,matris[k],&sonucMatrisi[k],bilinmeyenlerMatrisi,yollar,anaYollar);
 void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
     if(haritaSecimi==1) {
