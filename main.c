@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_native_dialog.h>
@@ -14,16 +15,16 @@ enum Yollar {aYolu,bYolu,cYolu,dYolu,eYolu};
 enum Nitelikler {bas,son,aracYogunlugu,isim};
 
 int haritaSecimi;
-
+char a[10];
 void bilinmeyenlerMatrisiniOlustur(int N,char matris[N],int yollar[5][4],int anaYollar[4][4]);
 
 void aracSayisiAl(char yolAdi,int *aracsayisi,int * bilinmeyenSayisi);
 
-void matrisSifirla(int N,int matris[N][N],int sonucMatrisi[N]);
+void matrisSifirla(int R,int N,int matris[R][N],int sonucMatrisi[R]);
 
-void matrisOlustur(int N,int matris[N][N],int sonucMatrisi[N],char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]);
+void matrisOlustur(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]);
 
-void matrisCiz(int N,int matris[N][N],int sonucMatrisi[N],char bilinmeyenlerMatrisi[N]);
+void matrisCiz(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N]);
 
 void yonSorgula(char Yoladi,int *yol);
 
@@ -36,7 +37,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
 
 int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]);
 
-int indexBul(char *dizi,int N,int aranan);
+int indexBul(const char *dizi,int N,int aranan);
 
 int main(void) {
     int w = 880;
@@ -63,128 +64,138 @@ int main(void) {
 
         al_show_native_message_box(display, NULL, "HATA", "Allegro baslatilamadi !", NULL, ALLEGRO_MESSAGEBOX_ERROR);
         return -1;
-    }
+    } else {
 
-    //ALLEGRO_DISPLAY *al_create_display(int w, int h)
+        //ALLEGRO_DISPLAY *al_create_display(int w, int h)
 
-    //al_set_new_display_flags(ALLEGRO_RESIZABLE);//Sets various flags to be used when creating new displays on the calling thread. flags is a bitfield containing any reasonable combination of the following:
-    display = al_create_display(w, h);
+        //al_set_new_display_flags(ALLEGRO_RESIZABLE);//Sets various flags to be used when creating new displays on the calling thread. flags is a bitfield containing any reasonable combination of the following:
+        display = al_create_display(w, h);
 
-    al_init_font_addon(); //font addon başlatıcı
-    al_init_ttf_addon(); //ttf addon başlatıcı
-    al_init_primitives_addon(); //primitives addon başlatıcı
-    al_init_image_addon();//image addon başlatıcı
+        al_init_font_addon(); //font addon başlatıcı
+        al_init_ttf_addon(); //ttf addon başlatıcı
+        al_init_primitives_addon(); //primitives addon başlatıcı
+        al_init_image_addon();//image addon başlatıcı
 
-    al_clear_to_color(al_map_rgb(255,255,255));     //void al_clear_to_color(ALLEGRO_COLOR color)
+        al_clear_to_color(al_map_rgb(255, 255, 255));     //void al_clear_to_color(ALLEGRO_COLOR color)
 
-    ALLEGRO_FONT *font24 = al_load_font("/home/tuhage/CLionProjects/LabProje/BalooBhai-Regular.ttf", 36, 0); //ALLEGRO_FONT *al_load_font(char const *filename, int size, int flags)
+        ALLEGRO_FONT *font24 = al_load_font("/home/tuhage/CLionProjects/LabProje/BalooBhai-Regular.ttf", 36,
+                                            0); //ALLEGRO_FONT *al_load_font(char const *filename, int size, int flags)
 
-    al_draw_text(font24, al_map_rgb(230, 24, 45), 160, 0, 0, "HARİTA-1"); /*void al_draw_text(const ALLEGRO_FONT *font,ALLEGRO_COLOR color, float x, float y, int flags,char const *text)
-                                                                         *
-                                                                                           =Flags=
-                                                                                            ALLEGRO_ALIGN_LEFT - Draw the text left-aligned (same as 0).
-                                                                                            ALLEGRO_ALIGN_CENTRE - Draw the text centered around the given position.
-                                                                                            ALLEGRO_ALIGN_RIGHT - Draw the text right-aligned to the given position.
-                                                                                 */
-    al_draw_text(font24, al_map_rgb(230, 24, 45),568 , 0, 0, "HARİTA-2");
+        al_draw_text(font24, al_map_rgb(230, 24, 45), 160, 0, 0, "HARİTA-1"); /*void al_draw_text(const ALLEGRO_FONT *font,ALLEGRO_COLOR color, float x, float y, int flags,char const *text)
+                                                                             *
+                                                                                               =Flags=
+                                                                                                ALLEGRO_ALIGN_LEFT - Draw the text left-aligned (same as 0).
+                                                                                                ALLEGRO_ALIGN_CENTRE - Draw the text centered around the given position.
+                                                                                                ALLEGRO_ALIGN_RIGHT - Draw the text right-aligned to the given position.
+                                                                                     */
+        al_draw_text(font24, al_map_rgb(230, 24, 45), 568, 0, 0, "HARİTA-2");
 
-    ALLEGRO_BITMAP  *image1  = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map.png");
-    ALLEGRO_BITMAP  *image2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map2.png");
+        ALLEGRO_BITMAP *image1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map.png");
+        ALLEGRO_BITMAP *image2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map2.png");
 
-    al_draw_bitmap(image1,50,50,0);al_draw_bitmap(image2,465,50,0);
-    al_flip_display(); //işlemleri ekrana yazıyor.
-
-    printf("Bir harita secin: ");
-    scanf("%d",&haritaSecimi);
-
+        al_draw_bitmap(image1, 50, 50, 0);
+        al_draw_bitmap(image2, 465, 50, 0);
+        al_flip_display(); //işlemleri ekrana yazıyor.
 
 
-    int girisSayisi=0,cikisSayisi=0,bilinmeyenSayisi=0;
-    int yollar[5][4]={},anaYollar[4][4];
-    isimleriGir(yollar,anaYollar);
+        while(1){
+        printf("Bir harita secin: ");
+        scanf("%s", a);
+        haritaSecimi=atoi(a);
+        if(haritaSecimi!=2&&haritaSecimi!=1){
+            printf("Lutfen gecerli bir harita numarası girin : (1 veya 2)\n");
+            continue;
+        }
 
-    printf("\nAna yollarin giris ve cikis bilgilerini giriniz(giris icin->1)(cikis icin -1) : \nGiris ve Cikis degerleri en fazla 2 adet olabilir.\n");
-
-
-
-
-    GirisCikisAl((char)anaYollar[tYolu][isim],&girisSayisi,&cikisSayisi,anaYollar[tYolu]);
-    GirisCikisAl((char)anaYollar[xYolu][isim],&girisSayisi,&cikisSayisi,anaYollar[xYolu]);
-    GirisCikisAl((char)anaYollar[yYolu][isim],&girisSayisi,&cikisSayisi,anaYollar[yYolu]);
-    GirisCikisAl((char)anaYollar[zYolu][isim],&girisSayisi,&cikisSayisi,anaYollar[zYolu]);
+        break;      }
 
 
-    printf("\n\n---Ana yollarin giris ve cikis degerleri basarili bir sekilde alındı---\n\n")    ;
+        int girisSayisi = 0, cikisSayisi = 0, bilinmeyenSayisi = 0;
+        int yollar[5][4] = {}, anaYollar[4][4];
+        isimleriGir(yollar, anaYollar);
 
-    printf("t yolu : ");if(anaYollar[tYolu][bas]==0)printf("Giris\n");else printf("Cikis\n");
-    printf("x yolu : ");if(anaYollar[xYolu][bas]==0)printf("Giris\n");else printf("Cikis\n");
-    printf("y yolu : ");if(anaYollar[yYolu][bas]==0)printf("Giris\n");else printf("Cikis\n");
-    printf("z yolu : ");if(anaYollar[zYolu][bas]==0)printf("Giris\n");else printf("Cikis\n");
+        printf("\nAna yollarin giris ve cikis bilgilerini giriniz(giris icin->1)(cikis icin->1) : \nGiris ve Cikis degerleri en fazla 2 adet olabilir.\n");
 
-    printf("\n\n");
 
-   if(haritaSecimi==1){
-       yonSorgula((char)yollar[aYolu][isim],yollar[aYolu]);
-       yonSorgula((char)yollar[bYolu][isim],yollar[bYolu]);
-       yonSorgula((char)yollar[dYolu][isim],yollar[dYolu]);
-       yonSorgula((char)yollar[cYolu][isim],yollar[cYolu]);
+        GirisCikisAl((char) anaYollar[tYolu][isim], &girisSayisi, &cikisSayisi, anaYollar[tYolu]);
+        GirisCikisAl((char) anaYollar[xYolu][isim], &girisSayisi, &cikisSayisi, anaYollar[xYolu]);
+        GirisCikisAl((char) anaYollar[yYolu][isim], &girisSayisi, &cikisSayisi, anaYollar[yYolu]);
+        GirisCikisAl((char) anaYollar[zYolu][isim], &girisSayisi, &cikisSayisi, anaYollar[zYolu]);
 
-   }
-   else {
 
-       yonSorgula((char)yollar[aYolu][isim],yollar[aYolu]);
-       yonSorgula((char)yollar[bYolu][isim],yollar[bYolu]);
-       yonSorgula((char)yollar[dYolu][isim],yollar[dYolu]);
-       yonSorgula((char)yollar[cYolu][isim],yollar[cYolu]);
-       yonSorgula((char)yollar[eYolu][isim],yollar[eYolu]);
+        printf("\n\n---Ana yollarin giris ve cikis degerleri basarili bir sekilde alındı---\n\n");
+
+        printf("t yolu : ");
+        if (anaYollar[tYolu][bas] == 0)printf("Giris\n"); else printf("Cikis\n");
+        printf("x yolu : ");
+        if (anaYollar[xYolu][bas] == 0)printf("Giris\n"); else printf("Cikis\n");
+        printf("y yolu : ");
+        if (anaYollar[yYolu][bas] == 0)printf("Giris\n"); else printf("Cikis\n");
+        printf("z yolu : ");
+        if (anaYollar[zYolu][bas] == 0)printf("Giris\n"); else printf("Cikis\n");
+
+        printf("\n\n");
+
+        if (haritaSecimi == 1) {
+            yonSorgula((char) yollar[aYolu][isim], yollar[aYolu]);
+            yonSorgula((char) yollar[bYolu][isim], yollar[bYolu]);
+            yonSorgula((char) yollar[dYolu][isim], yollar[dYolu]);
+            yonSorgula((char) yollar[cYolu][isim], yollar[cYolu]);
+
+        } else {
+
+            yonSorgula((char) yollar[aYolu][isim], yollar[aYolu]);
+            yonSorgula((char) yollar[bYolu][isim], yollar[bYolu]);
+            yonSorgula((char) yollar[dYolu][isim], yollar[dYolu]);
+            yonSorgula((char) yollar[cYolu][isim], yollar[cYolu]);
+            yonSorgula((char) yollar[eYolu][isim], yollar[eYolu]);
 
         }
 
         printf("\n--- Yonler basarili bir sekilde alindi---\n\n\nYonler harita uzerinde gosteriliyor...");
 
-/*burada gosterim yapılacak*/
+        /*burada gosterim yapılacak*/
 
-        printf("\n\n%d-->%d   %d-->%d \n\n",yollar[aYolu][bas],yollar[aYolu][son],yollar[bYolu][bas],yollar[bYolu][son]);
-            if(haritaSecimi==1){
-                aracSayisiAl((char)yollar[aYolu][isim],&yollar[aYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[bYolu][isim],&yollar[bYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[dYolu][isim],&yollar[dYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[cYolu][isim],&yollar[cYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[tYolu][isim],&anaYollar[tYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[xYolu][isim],&anaYollar[xYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[yYolu][isim],&anaYollar[yYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[zYolu][isim],&anaYollar[zYolu][aracYogunlugu],&bilinmeyenSayisi);
+        printf("\n\n%d-->%d   %d-->%d \n\n", yollar[aYolu][bas], yollar[aYolu][son], yollar[bYolu][bas],
+               yollar[bYolu][son]);
+        if (haritaSecimi == 1) {
+            aracSayisiAl((char) yollar[aYolu][isim], &yollar[aYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[bYolu][isim], &yollar[bYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[dYolu][isim], &yollar[dYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[cYolu][isim], &yollar[cYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[tYolu][isim], &anaYollar[tYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[xYolu][isim], &anaYollar[xYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[yYolu][isim], &anaYollar[yYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[zYolu][isim], &anaYollar[zYolu][aracYogunlugu], &bilinmeyenSayisi);
 
-            }else{
+        } else {
 
-                aracSayisiAl((char)yollar[aYolu][isim],&yollar[aYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[bYolu][isim],&yollar[bYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[dYolu][isim],&yollar[dYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[cYolu][isim],&yollar[cYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)yollar[eYolu][isim],&yollar[eYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[tYolu][isim],&anaYollar[tYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[xYolu][isim],&anaYollar[xYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[yYolu][isim],&anaYollar[yYolu][aracYogunlugu],&bilinmeyenSayisi);
-                aracSayisiAl((char)anaYollar[zYolu][isim],&anaYollar[zYolu][aracYogunlugu],&bilinmeyenSayisi);
-
-
-
-            }
-
-            int N=bilinmeyenSayisi;
-            int matris[N][N],sonucMatrisi[N];
-            char bilinmeyenlerMatrisi[N];
-            bilinmeyenlerMatrisiniOlustur(N,bilinmeyenlerMatrisi,yollar,anaYollar);
-            matrisSifirla(N,matris,sonucMatrisi);
-            matrisOlustur(N,matris,sonucMatrisi,bilinmeyenlerMatrisi,yollar,anaYollar);
-            matrisCiz(N,matris,sonucMatrisi,bilinmeyenlerMatrisi);
+            aracSayisiAl((char) yollar[aYolu][isim], &yollar[aYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[bYolu][isim], &yollar[bYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[dYolu][isim], &yollar[dYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[cYolu][isim], &yollar[cYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) yollar[eYolu][isim], &yollar[eYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[tYolu][isim], &anaYollar[tYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[xYolu][isim], &anaYollar[xYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[yYolu][isim], &anaYollar[yYolu][aracYogunlugu], &bilinmeyenSayisi);
+            aracSayisiAl((char) anaYollar[zYolu][isim], &anaYollar[zYolu][aracYogunlugu], &bilinmeyenSayisi);
 
 
+        }
+
+        int N = bilinmeyenSayisi,R=5;
+        int matris[N][N], sonucMatrisi[N];
+        char bilinmeyenlerMatrisi[N];
+        bilinmeyenlerMatrisiniOlustur(N, bilinmeyenlerMatrisi, yollar, anaYollar);
+        matrisSifirla(R,N, matris, sonucMatrisi);
+        matrisOlustur(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi, yollar, anaYollar);
+        matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
 
 
-    al_rest(5.0);
-    return 0;
+        al_rest(5.0);
+        return 0;
 
+    }
 }
 
 
@@ -192,7 +203,8 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
   int girisCikis,yolNum=0;
     while(1){
         printf("\n%c yolu : ",Yoladi);
-        scanf("%d",&girisCikis);
+        scanf("%s", a);
+        girisCikis=atoi(a);
         if((girisCikis)==1)(*girisSayisi)++;
         else if((girisCikis)==-1)(*cikisSayisi)++;
         else{printf("Lütfen geçerli bir değer giriniz ! Giris icin:1 Cikis icin:-1\n");continue;}
@@ -212,7 +224,7 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
 
     if(girisCikis==1){anayol[bas]=0;anayol[son]=yolNum;}
     else{anayol[son]=0;anayol[bas]=yolNum;}
-    printf("\n\n%d-->%d\n\n",anayol[bas],anayol[son]);
+
 
 }
 
@@ -220,7 +232,7 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
  void yonSorgula(char Yoladi,int *yol){
     char baslangicnoktasi,Yonu;
     while(1) {
-        printf("%c yolu icin baslangic noktasini giriniz : ", Yoladi);
+        printf("\n%c yolu icin baslangic noktasini giriniz : ", Yoladi);
         scanf("%c", &baslangicnoktasi);
         scanf("%c", &baslangicnoktasi);
         if (Yoladi == 'a' && (baslangicnoktasi != 't' && baslangicnoktasi != 'x')){
@@ -245,7 +257,7 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
 
     while(1) {
 
-        printf("%c yolu icin yonu giriniz : ", Yoladi);
+        printf("\n%c yolu icin yonu giriniz : ", Yoladi);
         scanf("%c", &Yonu);
         scanf("%c", &Yonu);
         if ((Yoladi == 'a' && baslangicnoktasi == 't' )&& (Yonu != 'x')){
@@ -302,15 +314,22 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
 
 void aracSayisiAl(char yolAdi,int *aracsayisi,int * bilinmeyenSayisi){
 
-    printf("%c yolundaki arac yogunlugunu giriniz(bilgi yok ise : -1 girin) : ",yolAdi);
-    scanf("%d",aracsayisi);
-    if(*aracsayisi==-1)*bilinmeyenSayisi+=1;
+    while(1) {
+        printf("\n%c yolundaki arac yogunlugunu giriniz(bilgi yok ise : -1 girin) : ", yolAdi);
+        scanf("%s", a);
+        *aracsayisi = atoi(a);
+        if (*aracsayisi == 0){
+            printf("Lutfen gecerli bir arac yogunlugu girin:\n");
+            continue;
+        }
+            if (*aracsayisi == -1)*bilinmeyenSayisi += 1;
 
+    break;}
 
 }
 //matrisOlustur(N,matris,sonucMatrisi,bilinmeyenlerMatrisi,yollar,anaYollar);
-void matrisSifirla(int N,int matris[N][N],int sonucMatrisi[N]){
-    for (int i = 0; i <N ; ++i) {
+void matrisSifirla(int R,int N,int matris[R][N],int sonucMatrisi[R]){
+    for (int i = 0; i <R ; ++i) {
         for (int j = 0; j <N ; ++j) {
             matris[i][j]=0;
 
@@ -318,21 +337,21 @@ void matrisSifirla(int N,int matris[N][N],int sonucMatrisi[N]){
         sonucMatrisi[i]=0;
     }
         }
-void matrisOlustur(int N,int matris[N][N],int sonucMatrisi[N],char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
+void matrisOlustur(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
             int k=0;
-    for (int i = 1; i <5 ; ++i) {
+    for (int i = 1; i <6 ; ++i) {
         if(dugumKontrol(i,yollar,anaYollar)==0)continue;
         dugumCoz(N,i,matris[k],&sonucMatrisi[k],bilinmeyenlerMatrisi,yollar,anaYollar);
         k++;
-        if(k==(N-1))break;
+        if(k==R)break;
     }
 }
-void matrisCiz(int N,int matris[N][N],int sonucMatrisi[N],char bilinmeyenlerMatrisi[N]){
+void matrisCiz(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N]){
     for (int k = 0; k <N ; ++k) {
         printf("%3c",bilinmeyenlerMatrisi[k]);
     }
     printf("\n");
-    for (int i = 0; i <N ; ++i) {
+    for (int i = 0; i <R ; ++i) {
         for (int j = 0; j <N ; ++j) {
             printf("%3d",matris[i][j]);
 
@@ -372,7 +391,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
             }
         }
 
-        if (dugumNo == 2) {
+        else if (dugumNo == 2) {
             if(yollar[aYolu][aracYogunlugu]==-1){
                 if(yollar[aYolu][son]==2) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'a')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'a')]+=1;
@@ -398,7 +417,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
             }
         }
 
-        if (dugumNo == 3) {
+        else if (dugumNo == 3) {
             if(yollar[dYolu][aracYogunlugu]==-1){
                 if(yollar[dYolu][son]==3) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]+=1;
@@ -423,7 +442,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
                 else *matrisSatirSonuc+=anaYollar[yYolu][aracYogunlugu];
             }
         }
-        if (dugumNo ==4) {
+       else if (dugumNo ==4) {
             if(yollar[dYolu][aracYogunlugu]==-1){
                 if(yollar[dYolu][son]==4) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]+=1;
@@ -449,6 +468,43 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
             }
         }
 
+
+       else if (dugumNo ==5) {
+
+            if(anaYollar[yYolu][aracYogunlugu]==-1){
+                if(anaYollar[yYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'y')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'y')]-=1;
+            }else{
+                if(anaYollar[yYolu][son]==0) *matrisSatirSonuc+=anaYollar[yYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[yYolu][aracYogunlugu];
+            }
+
+            if(anaYollar[xYolu][aracYogunlugu]==-1){
+                if(anaYollar[xYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'x')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'x')]-=1;
+            }else{
+                if(anaYollar[xYolu][son]==0) *matrisSatirSonuc+=anaYollar[xYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[xYolu][aracYogunlugu];
+            }
+
+
+            if(anaYollar[tYolu][aracYogunlugu]==-1){
+                if(anaYollar[tYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'t')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'t')]-=1;
+            }else{
+                if(anaYollar[tYolu][son]==0) *matrisSatirSonuc+=anaYollar[tYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[tYolu][aracYogunlugu];
+            }
+
+
+            if(anaYollar[zYolu][aracYogunlugu]==-1){
+                if(anaYollar[zYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'z')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'z')]-=1;
+            }else{
+                if(anaYollar[zYolu][son]==0) *matrisSatirSonuc+=anaYollar[zYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[zYolu][aracYogunlugu];
+            }
+        }
 
 
     }else {
@@ -485,7 +541,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
             }
         }
 
-        if (dugumNo == 2) {
+        else if (dugumNo == 2) {
             if(yollar[aYolu][aracYogunlugu]==-1){
                 if(yollar[aYolu][son]==2) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'a')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'a')]+=1;
@@ -511,7 +567,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
             }
         }
 
-        if (dugumNo == 3) {
+      else if (dugumNo == 3) {
             if(yollar[dYolu][aracYogunlugu]==-1){
                 if(yollar[dYolu][son]==3) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]+=1;
@@ -543,7 +599,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
                 else *matrisSatirSonuc+=anaYollar[yYolu][aracYogunlugu];
             }
         }
-        if (dugumNo ==4) {
+        else if (dugumNo ==4) {
             if(yollar[dYolu][aracYogunlugu]==-1){
                 if(yollar[dYolu][son]==4) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]+=1;
@@ -568,6 +624,42 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
                 else *matrisSatirSonuc+=anaYollar[zYolu][aracYogunlugu];
             }
         }
+        else if (dugumNo ==5) {
+
+            if(anaYollar[yYolu][aracYogunlugu]==-1){
+                if(anaYollar[yYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'y')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'y')]-=1;
+            }else{
+                if(anaYollar[yYolu][son]==0) *matrisSatirSonuc+=anaYollar[yYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[yYolu][aracYogunlugu];
+            }
+
+            if(anaYollar[xYolu][aracYogunlugu]==-1){
+                if(anaYollar[xYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'x')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'x')]-=1;
+            }else{
+                if(anaYollar[xYolu][son]==0) *matrisSatirSonuc+=anaYollar[xYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[xYolu][aracYogunlugu];
+            }
+
+
+            if(anaYollar[tYolu][aracYogunlugu]==-1){
+                if(anaYollar[tYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'t')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'t')]-=1;
+            }else{
+                if(anaYollar[tYolu][son]==0) *matrisSatirSonuc+=anaYollar[tYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[tYolu][aracYogunlugu];
+            }
+
+
+            if(anaYollar[zYolu][aracYogunlugu]==-1){
+                if(anaYollar[zYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'z')]+=1;
+                else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'z')]-=1;
+            }else{
+                if(anaYollar[zYolu][son]==0) *matrisSatirSonuc+=anaYollar[zYolu][aracYogunlugu];
+                else *matrisSatirSonuc-=anaYollar[zYolu][aracYogunlugu];
+            }
+        }
 
 
 
@@ -583,20 +675,26 @@ int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]){
                  else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
              }
-             if (dugumNo == 2) {
+             else if (dugumNo == 2) {
                  if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
              }
-             if (dugumNo == 3) {
+             else if (dugumNo == 3) {
                  if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
              }
-             if (dugumNo == 4) {
+             else if (dugumNo == 4) {
                  if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
+             }
+             else if (dugumNo == 5) {
+                 if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
+                 else if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
+                 else if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
+                 else if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
              }
 
 
@@ -623,6 +721,12 @@ int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]){
                  if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
                  else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
+             }
+             else if (dugumNo == 5) {
+                 if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
+                 else if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
+                 else if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
+                 else if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
              }
 
 
@@ -675,7 +779,7 @@ void isimleriGir(int a[5][4],int b[4][4]){
     b[yYolu][isim]=(int)'y';
     b[zYolu][isim]=(int)'z';}
 
-int indexBul(char *dizi,int N,int aranan){
+int indexBul(const char *dizi,int N,int aranan){
     for (int i = 0; i <N ; ++i) {
         if(dizi[i]==aranan){
             return i;
