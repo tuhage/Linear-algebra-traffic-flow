@@ -158,6 +158,7 @@ int main(void) {
 
         printf("\n\n%d-->%d   %d-->%d \n\n", yollar[aYolu][bas], yollar[aYolu][son], yollar[bYolu][bas],
                yollar[bYolu][son]);
+
         if (haritaSecimi == 1) {
             aracSayisiAl((char) yollar[aYolu][isim], &yollar[aYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) yollar[bYolu][isim], &yollar[bYolu][aracYogunlugu], &bilinmeyenSayisi);
@@ -184,7 +185,7 @@ int main(void) {
         }
 
         int N = bilinmeyenSayisi,R=5;
-        int matris[N][N], sonucMatrisi[N];
+        int matris[R][N], sonucMatrisi[R];
         char bilinmeyenlerMatrisi[N];
         bilinmeyenlerMatrisiniOlustur(N, bilinmeyenlerMatrisi, yollar, anaYollar);
         matrisSifirla(R,N, matris, sonucMatrisi);
