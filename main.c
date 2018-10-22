@@ -39,7 +39,6 @@ int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]);
 
 int indexBul(const char *dizi,int N,int aranan);
 
-void matrisIndirgeme(int R,int N,int matris[R][N],int sonucMatrisi[R]);
 
 int main(void) {
     int w = 880;
@@ -101,15 +100,15 @@ int main(void) {
 
 
         while(1){
-        printf("Bir harita secin: ");
-        scanf("%s", a);
-        haritaSecimi=atoi(a);
-        if(haritaSecimi!=2&&haritaSecimi!=1){
-            printf("Lutfen gecerli bir harita numarası girin : (1 veya 2)\n");
-            continue;
-        }
+            printf("Bir harita secin: ");
+            scanf("%s", a);
+            haritaSecimi=atoi(a);
+            if(haritaSecimi!=2&&haritaSecimi!=1){
+                printf("Lutfen gecerli bir harita numarası girin : (1 veya 2)\n");
+                continue;
+            }
 
-        break;      }
+            break;      }
 
 
         int girisSayisi = 0, cikisSayisi = 0, bilinmeyenSayisi = 0;
@@ -197,7 +196,7 @@ int main(void) {
         matrisOlustur(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi, yollar, anaYollar);
         matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
         printf("\n\n");
-        matrisIndirgeme(R,N,matris,sonucMatrisi);
+        gauss(R,N,matris,sonucMatrisi);
         matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
         al_rest(5.0);
         return 0;
@@ -207,7 +206,7 @@ int main(void) {
 
 
 void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
-  int girisCikis,yolNum=0;
+    int girisCikis,yolNum=0;
     while(1){
         printf("\n%c yolu : ",Yoladi);
         scanf("%s", a);
@@ -236,7 +235,7 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
 }
 
 
- void yonSorgula(char Yoladi,int *yol){
+void yonSorgula(char Yoladi,int *yol){
     char baslangicnoktasi,Yonu;
     while(1) {
         printf("\n%c yolu icin baslangic noktasini giriniz : ", Yoladi);
@@ -257,7 +256,7 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
         else if (Yoladi == 'e' && (baslangicnoktasi != 't' && baslangicnoktasi != 'y')){
             printf("Lütfen geçerli bir baslangic noktasi girin\n");
             continue;}
-     break;
+        break;
     }
 
 
@@ -270,10 +269,10 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
         if ((Yoladi == 'a' && baslangicnoktasi == 't' )&& (Yonu != 'x')){
             printf("Lutfen geçerli bir yon girin\n");
             continue;}
-            else if((Yoladi == 'a' && baslangicnoktasi == 'x' )&& (Yonu != 't')){
-             printf("Lutfen geçerli bir yon girin\n");
+        else if((Yoladi == 'a' && baslangicnoktasi == 'x' )&& (Yonu != 't')){
+            printf("Lutfen geçerli bir yon girin\n");
             continue;
-}else if ((Yoladi == 'b' && baslangicnoktasi == 'y' )&& (Yonu != 'x')){
+        }else if ((Yoladi == 'b' && baslangicnoktasi == 'y' )&& (Yonu != 'x')){
             printf("Lutfen geçerli bir yon girin\n");
             continue;}
         else if((Yoladi == 'b' && baslangicnoktasi == 'x' )&& (Yonu != 'y')){
@@ -306,15 +305,15 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
         break;
     }
 
-     if(baslangicnoktasi=='t')yol[bas]=1;
-     else if(baslangicnoktasi=='x')yol[bas]=2;
-     else if(baslangicnoktasi=='y')yol[bas]=3;
-     else if(baslangicnoktasi=='z')yol[bas]=4;
+    if(baslangicnoktasi=='t')yol[bas]=1;
+    else if(baslangicnoktasi=='x')yol[bas]=2;
+    else if(baslangicnoktasi=='y')yol[bas]=3;
+    else if(baslangicnoktasi=='z')yol[bas]=4;
 
-     if(Yonu=='t')yol[son]=1;
-     else if(Yonu=='x')yol[son]=2;
-     else if(Yonu=='y')yol[son]=3;
-     else if(Yonu=='z')yol[son]=4;
+    if(Yonu=='t')yol[son]=1;
+    else if(Yonu=='x')yol[son]=2;
+    else if(Yonu=='y')yol[son]=3;
+    else if(Yonu=='z')yol[son]=4;
 
 
 }
@@ -329,9 +328,9 @@ void aracSayisiAl(char yolAdi,int *aracsayisi,int * bilinmeyenSayisi){
             printf("Lutfen gecerli bir arac yogunlugu girin:\n");
             continue;
         }
-            if (*aracsayisi == -1)*bilinmeyenSayisi += 1;
+        if (*aracsayisi == -1)*bilinmeyenSayisi += 1;
 
-    break;}
+        break;}
 
 }
 //matrisOlustur(N,matris,sonucMatrisi,bilinmeyenlerMatrisi,yollar,anaYollar);
@@ -343,9 +342,9 @@ void matrisSifirla(int R,int N,int matris[R][N],int sonucMatrisi[R]){
         }
         sonucMatrisi[i]=0;
     }
-        }
+}
 void matrisOlustur(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
-            int k=0;
+    int k=0;
     for (int i = 1; i <6 ; ++i) {
         if(dugumKontrol(i,yollar,anaYollar)==0)continue;
         dugumCoz(N,i,matris[k],&sonucMatrisi[k],bilinmeyenlerMatrisi,yollar,anaYollar);
@@ -368,81 +367,96 @@ void matrisCiz(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenl
     }
 
 
-        }
-
-void matrisIndirgeme(int R,int N,int matris[R][N],int sonucMatrisi[R]){
-int kontrol=0,bosluklarinIndesleri[R-N];
-
-    for (int i = R-1; i >=0 ; i--) {
-       kontrol+=matrisSatirSifirla(R,N,i,matris,sonucMatrisi);
-        if(kontrol==R-N)break;
-    }
-
-
 }
-int matrisSatirSifirla(int R,int N,int matrisSatirIndis,int matris[R][N],int sonucMatrisi[R]){
-
-    int matrisSatirTemp[N],sonucTemp=sonucMatrisi[matrisSatirIndis],kontrol=0,kontrol2=1;
-    for (int i = 0; i <N ; i++) {
-        matrisSatirTemp[i]=matris[matrisSatirIndis][i];
-    }
-
-
-    while(1){
-
-        for (int i = 0; i <N ; i++) {
-          if(matrisSatirTemp[i]!=0){
-              kontrol=0;break;
-          }
-          kontrol=1;
-        }
-        if(kontrol==1)break;
-
-
-        for (int j = 0; j <N ; j++) {
-            if(matrisSatirTemp[j]==0)continue;
-
-
-            for (int i = 0; i <R ; i++) {
-                if(i==matrisSatirIndis)continue;
 
 
 
-                if(matris[i][j]==matrisSatirTemp[j]){
-                    for (int k = 0; k <N ; k++) {
-                        matrisSatirTemp[k]-=matris[i][k];
-                    }
-                    sonucTemp-=sonucMatrisi[i];
 
-                    break; }
-                else if(matris[i][j]==(matrisSatirTemp[j]*(-1))){
-                    for (int k = 0; k <N ; k++) {
-                        matrisSatirTemp[k]+=matris[i][k];
-                    }
-                    sonucTemp+=sonucMatrisi[i];
-                    break;
+void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
 
-                }
-                kontrol2++;
+    int temp;float a;
+
+    for (int i = 0; i <N ; ++i) {
+
+        if(matris[i][i]!=0){
+            a=(float)1/matris[i][i];
+            for (int j = 0; j <N ; ++j) {
+                matris[i][j]*=a;
+
+
             }
-            if(kontrol2==R)return -1;
-            else kontrol2=0;
+            sonucMatrisi[i]*=a;
+        }
+
+        if(matris[i][i]!=1){
+
+            for (int j = i+1; j <R ; ++j) {
+
+                if(matris[j][i]!=0){
+                    a=(float)1/matris[j][i];
+                    for (int k = 0; k <N ; ++k) {
+                        matris[j][k]*=a;
+
+                    }
+                    sonucMatrisi[j]*=a;
+
+                    for (int l = 0; l <N ; ++l) {
+                        temp=matris[j][l];
+                        matris[j][l]=matris[i][l];
+                        matris[i][l]=temp;
+
+                    }
+                    temp=sonucMatrisi[j];
+                    sonucMatrisi[j]=sonucMatrisi[i];
+                    sonucMatrisi[i]=temp;
+                    break;
+                }
+
+            }
+        }
+
+        if(matris[i][i]!=1)continue;
+
+        for (int m = i+1; m <R ; ++m) {
+
+            if(matris[m][i]!=0){
+                a=(float)matris[m][i];
+
+                for (int j = 0; j <N ; ++j) {
+                    matris[m][j]-=matris[i][j]*a;
+                }
+                sonucMatrisi[m]-=sonucMatrisi[i]*a;
+
+
+            }
+
 
 
         }
 
-
-        }
-
-
-
-    for (int l = 0; l <N ; ++l) {
-        matris[matrisSatirIndis][l]=matrisSatirTemp[l];
 
     }
-sonucMatrisi[matrisSatirIndis]=sonucTemp;
 
-return 1;
+    for (int n = 0; n <R-1 ; ++n) {
+
+
+        for (int i = n+1; i <N ; ++i) {
+            if(matris[n][i]==0)continue;
+            if(matris[i][i]==0)continue;
+            a=matris[n][i];
+            for (int j = 0; j <N ; ++j) {
+                matris[n][j]-=a*matris[i][j];
+
+            }
+            sonucMatrisi[n]-=a*sonucMatrisi[i];
+
+
+
+        }
+
+
+    }
+
 }
 //dugumCoz(N,i,matris[k],&sonucMatrisi[k],bilinmeyenlerMatrisi,yollar,anaYollar);
 void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
@@ -524,7 +538,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
                 else *matrisSatirSonuc+=anaYollar[yYolu][aracYogunlugu];
             }
         }
-       else if (dugumNo ==4) {
+        else if (dugumNo ==4) {
             if(yollar[dYolu][aracYogunlugu]==-1){
                 if(yollar[dYolu][son]==4) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]+=1;
@@ -551,7 +565,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
         }
 
 
-       else if (dugumNo ==5) {
+        else if (dugumNo ==5) {
 
             if(anaYollar[yYolu][aracYogunlugu]==-1){
                 if(anaYollar[yYolu][son]==0) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'y')]+=1;
@@ -649,7 +663,7 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
             }
         }
 
-      else if (dugumNo == 3) {
+        else if (dugumNo == 3) {
             if(yollar[dYolu][aracYogunlugu]==-1){
                 if(yollar[dYolu][son]==3) matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]-=1;
                 else matrisSatir[indexBul(bilinmeyenlerMatrisi,N,'d')]+=1;
@@ -750,105 +764,105 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
     (*matrisSatirSonuc)*=-1;
 }
 int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]){
-         int kontrol=0;
-         if(haritaSecimi==1) {
-             if (dugumNo == 1) {
-                 if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             else if (dugumNo == 2) {
-                 if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             else if (dugumNo == 3) {
-                 if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             else if (dugumNo == 4) {
-                 if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             else if (dugumNo == 5) {
-                 if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
+    int kontrol=0;
+    if(haritaSecimi==1) {
+        if (dugumNo == 1) {
+            if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        else if (dugumNo == 2) {
+            if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        else if (dugumNo == 3) {
+            if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        else if (dugumNo == 4) {
+            if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        else if (dugumNo == 5) {
+            if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
 
 
-         }else{
-             if (dugumNo == 1) {
-                 if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[eYolu][aracYogunlugu] == -1)kontrol = 1;
+    }else{
+        if (dugumNo == 1) {
+            if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[eYolu][aracYogunlugu] == -1)kontrol = 1;
 
-             }
-             if (dugumNo == 2) {
-                 if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             if (dugumNo == 3) {
-                 if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[eYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             if (dugumNo == 4) {
-                 if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
-             else if (dugumNo == 5) {
-                 if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
-                 else if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
-             }
+        }
+        if (dugumNo == 2) {
+            if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[aYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        if (dugumNo == 3) {
+            if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[bYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[eYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        if (dugumNo == 4) {
+            if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[cYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (yollar[dYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
+        else if (dugumNo == 5) {
+            if (anaYollar[zYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (anaYollar[tYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (anaYollar[xYolu][aracYogunlugu] == -1)kontrol = 1;
+            else if (anaYollar[yYolu][aracYogunlugu] == -1)kontrol = 1;
+        }
 
 
 
-         }
+    }
 
-         return kontrol;
+    return kontrol;
 }
 
 
 
 void bilinmeyenlerMatrisiniOlustur(int N,char matris[N],int yollar[5][4],int anaYollar[4][4]){
-            int j=0;
-            if(haritaSecimi==1){
-                for (int i = aYolu; i <=dYolu ; i++) {
-                    if(yollar[i][aracYogunlugu]==-1){
-                    matris[j]=(char)yollar[i][isim];j++;}
+    int j=0;
+    if(haritaSecimi==1){
+        for (int i = aYolu; i <=dYolu ; i++) {
+            if(yollar[i][aracYogunlugu]==-1){
+                matris[j]=(char)yollar[i][isim];j++;}
 
-                }
-                for (int i = tYolu; i <=zYolu ; i++) {
-                    if(anaYollar[i][aracYogunlugu]==-1){
-                        matris[j]=(char)anaYollar[i][isim];j++;}
-
-                }
-
-
-            }else {
-
-                for (int i = aYolu; i <= eYolu; i++) {
-                    if (yollar[i][aracYogunlugu] == -1){
-                        matris[j]=(char)yollar[i][isim];j++;}
-
-                }
-                for (int i = tYolu; i <= zYolu; i++) {
-                    if (anaYollar[i][aracYogunlugu] == -1){
-                        matris[j]=(char)anaYollar[i][isim];j++;}
-
-                }
-            }
         }
+        for (int i = tYolu; i <=zYolu ; i++) {
+            if(anaYollar[i][aracYogunlugu]==-1){
+                matris[j]=(char)anaYollar[i][isim];j++;}
+
+        }
+
+
+    }else {
+
+        for (int i = aYolu; i <= eYolu; i++) {
+            if (yollar[i][aracYogunlugu] == -1){
+                matris[j]=(char)yollar[i][isim];j++;}
+
+        }
+        for (int i = tYolu; i <= zYolu; i++) {
+            if (anaYollar[i][aracYogunlugu] == -1){
+                matris[j]=(char)anaYollar[i][isim];j++;}
+
+        }
+    }
+}
 
 void isimleriGir(int a[5][4],int b[4][4]){
     a[aYolu][isim]=(int)'a';
