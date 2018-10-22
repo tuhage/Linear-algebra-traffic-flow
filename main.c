@@ -157,9 +157,6 @@ int main(void) {
 
         /*burada gosterim yapılacak*/
 
-        printf("\n\n%d-->%d   %d-->%d \n\n", yollar[aYolu][bas], yollar[aYolu][son], yollar[bYolu][bas],
-               yollar[bYolu][son]);
-
         if (haritaSecimi == 1) {
             aracSayisiAl((char) yollar[aYolu][isim], &yollar[aYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) yollar[bYolu][isim], &yollar[bYolu][aracYogunlugu], &bilinmeyenSayisi);
@@ -185,6 +182,8 @@ int main(void) {
 
         }
 
+        printf("\n");
+
         int N = bilinmeyenSayisi,R=5;
         int matris[R][N], sonucMatrisi[R];
         char bilinmeyenlerMatrisi[N];
@@ -197,13 +196,103 @@ int main(void) {
         matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
         printf("\n\n");
         gauss(R,N,matris,sonucMatrisi);
-        matrisCiz(R,N, matris, sonucMatrisi, bilinmeyenlerMatrisi);
+       int sonuc=sonucKontrol(R,N,matris,sonucMatrisi);
+       sonucuYaz(R,N,matris,sonucMatrisi,bilinmeyenlerMatrisi,sonuc);
         al_rest(5.0);
         return 0;
 
     }
 }
 
+int sonucKontrol(int R,int N,int matris[R][N],int sonucMatrsisi[R]){
+     int kontrol=0,kontrol1=0,kontrol2=0,sonsuzindis;
+
+    for (int i = 0; i <N; ++i) {
+        if(matris[i][i]==1 )kontrol1++;if(sonucMatrsisi[i]>=0)kontrol++;
+
+    }
+
+    for (int j = R-1; j >=0 ; --j) {
+        for (int i = 0; i <N ; ++i) {
+            if(matris[j][i]!=0){kontrol2=0;break;}
+            kontrol2++;
+        }
+        if(kontrol2==N)if(sonucMatrsisi[j]!=0)return -1;//çelişki durumu
+        kontrol2=0;
+    }
+
+    if(kontrol==N && kontrol1==N)return 1; // çözüm var
+    if(kontrol<N && kontrol1==N) return -2; //negatif bir yoğunluk değeri olamaz
+
+    for (int k = 0; k <N ; ++k) {
+        for (int i = 0; i <N ; ++i) {
+            if(matris[k][k]==1){
+                if(i==k){
+                    kontrol2++;
+                    continue;
+                }
+            }else{sonsuzindis=k;kontrol2=N; break;}
+
+            if(matris[k][i]!=0)kontrol2+=N;
+            if(matris[k][i]==0&&sonucMatrsisi[k]>=0)kontrol2++;
+        }
+
+
+        if(kontrol2<N)return -2;
+        kontrol2=0;
+    }
+
+    return sonsuzindis*5;//sonsuz sayıda çözüm
+
+
+}
+void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyenlerMatrisi[N],int durum){
+
+
+
+                if(durum==1){
+                    printf("\n");
+                    matrisCiz(N,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
+                    printf("\n\n ---- Sonuc basarili bir sekilde hesaplandi ---- \n");
+                    printf("\n ---- Sonuc ---- \n");
+                    for (int i = 0; i <N ; ++i) {
+                        printf("%c yolunun yogunlugu = %d \n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
+
+                    }
+                }else if(durum%5==0){
+
+                    printf("\n");
+                    matrisCiz(N,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
+                    printf("\n ---- Sonuc ---- \n");
+                    printf("Girdiginiz degerler ile %c yoluna baglı olarak sonsuz sayıda cozum bulunmaktadir.",bilinmeyenlerMatrisi[durum/5],durum/5);
+
+
+                }else if(durum==-1){
+
+                    printf("\n");
+                    matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
+                    printf("\n ---- Sonuc ---- \n");
+                    printf("Girdiginiz degerler celiskili oldugu icin cozum bulunanamaktadır");
+
+
+                }else if(durum==-2){
+
+                    printf("\n");
+                    matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
+                    printf("\n ---- Sonuc ---- \n");
+                    printf("Yogunluk degeri negatif olamayacagi icin cozum bulunanamaktadır");
+
+
+                }
+
+
+
+
+
+
+
+
+}
 
 void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
     int girisCikis,yolNum=0;
@@ -239,8 +328,11 @@ void yonSorgula(char Yoladi,int *yol){
     char baslangicnoktasi,Yonu;
     while(1) {
         printf("\n%c yolu icin baslangic noktasini giriniz : ", Yoladi);
-        scanf("%c", &baslangicnoktasi);
-        scanf("%c", &baslangicnoktasi);
+        scanf("%s", a);
+        if(strlen(a)>1){
+            printf("Lütfen geçerli bir baslangic noktasi girin\n");
+            continue;}
+        baslangicnoktasi=a[0];
         if (Yoladi == 'a' && (baslangicnoktasi != 't' && baslangicnoktasi != 'x')){
             printf("Lütfen geçerli bir baslangic noktasi girin\n");
             continue;}
@@ -264,8 +356,11 @@ void yonSorgula(char Yoladi,int *yol){
     while(1) {
 
         printf("\n%c yolu icin yonu giriniz : ", Yoladi);
-        scanf("%c", &Yonu);
-        scanf("%c", &Yonu);
+        scanf("%s", a);
+       if(strlen(a)>1){
+           printf("Lutfen geçerli bir yon girin\n");
+        continue;}
+       Yonu=a[0];
         if ((Yoladi == 'a' && baslangicnoktasi == 't' )&& (Yonu != 'x')){
             printf("Lutfen geçerli bir yon girin\n");
             continue;}
@@ -370,7 +465,68 @@ void matrisCiz(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenl
 }
 
 
+void gaussAdimYazici(int R,int N,int matris[R][N],int sonucMatrisi[R],int durum,int islemYapilanSatirIndis,int islemYapilanSatirIndis2,int sayi){
 
+
+
+    if (durum==1){
+
+            for (int i = 0; i <R ; ++i) {
+
+            for (int j = 0; j <N ; ++j) {
+            printf("%3d",matris[i][j]);
+
+            }
+
+                if(i==R/2){
+                    printf("  | %-3d      R%d --> R%d * %d\n",sonucMatrisi[i],islemYapilanSatirIndis+1,islemYapilanSatirIndis+1,sayi);
+
+                }else  printf("  | %d\n",sonucMatrisi[i]);
+            }
+
+            printf("\n");
+
+    }else if(durum==2){
+
+        for (int i = 0; i <R ; ++i) {
+
+            for (int j = 0; j <N ; ++j) {
+                printf("%3d",matris[i][j]);
+
+            }
+
+            if(i==R/2){
+                printf("  | %-3d      R%d <--> R%d\n",sonucMatrisi[i],islemYapilanSatirIndis+1,islemYapilanSatirIndis2+1);
+
+            }else  printf("  | %d\n",sonucMatrisi[i]);
+        }
+
+        printf("\n");
+
+
+
+
+    }else if (durum==3){
+
+        for (int i = 0; i <R ; ++i) {
+
+            for (int j = 0; j <N ; ++j) {
+                printf("%3d",matris[i][j]);
+
+            }
+
+            if(i==R/2){
+                printf("  | %-3d      R%d --> R%d - R%d * %d\n",sonucMatrisi[i],islemYapilanSatirIndis+1,islemYapilanSatirIndis+1,islemYapilanSatirIndis2+1,sayi);
+
+            }else  printf("  | %d\n",sonucMatrisi[i]);
+        }
+
+        printf("\n");
+
+    }
+
+
+}
 
 void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
 
@@ -386,6 +542,7 @@ void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
 
             }
             sonucMatrisi[i]*=a;
+            gaussAdimYazici(R,N,matris,sonucMatrisi,1,i,0,a);
         }
 
         if(matris[i][i]!=1){
@@ -409,6 +566,7 @@ void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
                     temp=sonucMatrisi[j];
                     sonucMatrisi[j]=sonucMatrisi[i];
                     sonucMatrisi[i]=temp;
+                    gaussAdimYazici(R,N,matris,sonucMatrisi,2,i,j,a);
                     break;
                 }
 
@@ -427,6 +585,7 @@ void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
                 }
                 sonucMatrisi[m]-=sonucMatrisi[i]*a;
 
+                gaussAdimYazici(R,N,matris,sonucMatrisi,3,m,i,a);
 
             }
 
@@ -451,7 +610,7 @@ void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
             sonucMatrisi[n]-=a*sonucMatrisi[i];
 
 
-
+            gaussAdimYazici(R,N,matris,sonucMatrisi,3,n,i,a);
         }
 
 
@@ -459,6 +618,8 @@ void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
 
 }
 //dugumCoz(N,i,matris[k],&sonucMatrisi[k],bilinmeyenlerMatrisi,yollar,anaYollar);
+
+
 void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
     if(haritaSecimi==1) {
         if (dugumNo == 1) {
