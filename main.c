@@ -15,7 +15,14 @@ enum Yollar {aYolu,bYolu,cYolu,dYolu,eYolu};
 enum Nitelikler {bas,son,aracYogunlugu,isim};
 
 int haritaSecimi;
-char a[10];
+int celiski;
+char TEMP[10];
+void allegroGiris();
+
+void allegroHarita();
+
+void allegroYonleriCiz(int aSon,int bSon,int cSon,int dSon,int eSon,int tSon,int xSon,int ySon,int zSon);
+
 void bilinmeyenlerMatrisiniOlustur(int N,char matris[N],int yollar[5][4],int anaYollar[4][4]);
 
 void aracSayisiAl(char yolAdi,int *aracsayisi,int * bilinmeyenSayisi);
@@ -26,7 +33,15 @@ void matrisOlustur(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinme
 
 void matrisCiz(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N]);
 
+void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]);
+
+int sonucKontrol(int R,int N,int matris[R][N],int sonucMatrsisi[R]);
+
+void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyenlerMatrisi[N],int durum);
+
 void yonSorgula(char Yoladi,int *yol);
+
+int yonKontrol(int yollar[5][4],int anaYollar[4][4]);
 
 void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol);
 
@@ -39,6 +54,9 @@ int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]);
 
 int indexBul(const char *dizi,int N,int aranan);
 
+int esitsizlik(int R,int N,int matris[R][N],int sonucMatrisi[R]);
+
+void delay(unsigned int mseconds);
 
 int main(void) {
 
@@ -46,8 +64,8 @@ int main(void) {
 
         while(1){
             printf("Bir harita secin: ");
-            scanf("%s", a);
-            haritaSecimi=atoi(a);
+            scanf("%s",TEMP);
+            haritaSecimi=atoi(TEMP);
             if(haritaSecimi!=2&&haritaSecimi!=1){
                 printf("Lutfen gecerli bir harita numarası girin : (1 veya 2)\n");
                 continue;
@@ -98,11 +116,14 @@ int main(void) {
                     yonSorgula((char) yollar[eYolu][isim], yollar[eYolu]);
 
                 }
-
-                if(yonKontrol(yollar,anaYollar)!=0)break;
-                printf("\nUc veya dort yolun yonu ayni noktada kesisemez ! \nlutfen yonleri tekrar giriniz \n");
+                int test=yonKontrol(yollar,anaYollar);
+                if(test==1)break;
+                else if(test==0)
+                    printf("\nUc veya dort yolun yonu ayni noktada kesisemez ! \nlutfen yonleri tekrar giriniz \n");
+                else if(test==2)
+                    printf("\nUc veya dort yolun baslangic noktasi ayni olamaz ! \nlutfen yonleri tekrar giriniz \n");
             }
-        printf("\n--- Yonler basarili bir sekilde alindi---\n\n\nYonler harita uzerinde gosteriliyor...");
+        printf("\n\n\n--- Yonler basarili bir sekilde alindi---\n\n\n...Yonler harita uzerinde gosteriliyor...\n\n\n");
 
        allegroYonleriCiz(yollar[aYolu][son],yollar[bYolu][son],yollar[cYolu][son],yollar[dYolu][son],yollar[eYolu][son],anaYollar[tYolu][son],anaYollar[xYolu][son],anaYollar[yYolu][son],anaYollar[zYolu][son]);
         while(bilinmeyenSayisi<1){
@@ -174,91 +195,296 @@ int sonucKontrol(int R,int N,int matris[R][N],int sonucMatrsisi[R]){
 
     if(kontrol==N && kontrol1==N)return 1; // çözüm var
     if(kontrol<N && kontrol1==N) return -2; //negatif bir yoğunluk değeri olamaz
-
-    for (int k = 0; k <N ; ++k) {
-        for (int i = 0; i <N ; ++i) {
-            if(matris[k][k]==1){
-                if(i==k){
-                    kontrol2++;
-                    continue;
-                }
-            }else{sonsuzindis=k;kontrol2=N; break;}
-
-            if(matris[k][i]!=0)kontrol2+=N;
-            if(matris[k][i]==0&&sonucMatrsisi[k]>=0)kontrol2++;
-        }
-
-
-        if(kontrol2<N)return -2;
-        kontrol2=0;
-    }
-
-    return sonsuzindis*5;//sonsuz sayıda çözüm
+     if(N>4)return 11;
+ 
 
 
 }
+int esitsizlik(int R,int N,int matris[R][N],int sonucMatrisi[R]){
+    
+    int sayi[N],toplam=0,max=sonucMatrisi[0],k=0,kontrol=0;
+    printf("\n");
+   for(int i=0;i<R;i++){
+      matris[i][i]=0;
+    }
+    
+    for(int i=1;i<R;i++){
+        if(sonucMatrisi[i]>max){
+            max=sonucMatrisi[i];
+        }
+        
+    }
+    
+    
+
+    while(1){
+        
+        for(int i=0;i<N;i++){     
+            sayi[i]=i%4+1;
+        }
+        while(1){
+            
+            sayi[k]++;
+for(int i=0;i<R;i++){
+    
+    
+    for(int j=0;j<N;j++){
+        
+        toplam+=matris[i][j]*sayi[j];
+    }
+    if(toplam<=sonucMatrisi[i]){
+        kontrol++;
+    }
+    toplam=0;
+}
+            if(kontrol==R){
+                for(int i=0;i<N;i++){
+                    
+                }
+                return 1;}
+            kontrol=0;
+           
+            if(sayi[k]>max*2)break;
+
+}    
+k++;
+
+        if(sayi[N-1]>max*2)break;//hiçbir koşul sağlanamadı.
+    }
+    
+    k=0;
+    
+     while(1){
+        
+        for(int i=0;i<N;i++){     
+            sayi[i]=N-i;
+        }
+        while(1){
+             printf("%d_2_%d\n",sayi[k],k);
+            sayi[k]++;
+for(int i=0;i<R;i++){
+    
+    
+    for(int j=0;j<N;j++){
+        
+        toplam+=matris[i][j]*sayi[j];
+    }
+    if(toplam<=sonucMatrisi[i]){
+        kontrol++;
+    }
+    toplam=0;
+}
+            if(kontrol==R){
+                for(int i=0;i<N;i++){
+                    printf("%d -- %d\n",i+1,sayi[i]);
+                }
+                return 1;}
+            kontrol=0;
+            printf("%d^2^%d\n",sayi[k],k);
+            if(sayi[k]>max*2)break;
+
+}    
+k++;
+
+        if(sayi[N-1]>max*2)break;//hiçbir koşul sağlanamadı.
+    }
+    
+    
+    
+    
+     k=0;
+    
+     while(1){
+        
+        for(int i=0;i<N;i++){     
+            sayi[i]=(max*2)-i;
+        }
+        while(1){
+             printf("%d_3_%d\n",sayi[k],k);
+            sayi[k]--;
+for(int i=0;i<R;i++){
+    
+    
+    for(int j=0;j<N;j++){
+        
+        toplam+=matris[i][j]*sayi[j];
+    }
+    if(toplam<=sonucMatrisi[i]){
+        kontrol++;
+    }
+    toplam=0;
+}
+            if(kontrol==R){
+                for(int i=0;i<N;i++){
+                    printf("%d -- %d\n",i+1,sayi[i]);
+                }
+                return 1;}
+            kontrol=0;
+          
+            if(sayi[k]==1)break;
+
+}    
+k++;
+
+        if(sayi[N-1]==1)break;//hiçbir koşul sağlanamadı.
+    }
+     
+     k=0;
+    
+     while(1){
+        
+        for(int i=0;i<N;i++){     
+            sayi[i]=(max*2)+i;
+        }
+        while(1){
+             printf("%d_4_%d\n",sayi[k],k);
+            sayi[k]--;
+for(int i=0;i<R;i++){
+    
+    
+    for(int j=0;j<N;j++){
+        
+        toplam+=matris[i][j]*sayi[j];
+    }
+    if(toplam<=sonucMatrisi[i]){
+        kontrol++;
+    }
+    toplam=0;
+}
+            if(kontrol==R){
+                for(int i=0;i<N;i++){
+                    printf("%d -- %d\n",i+1,sayi[i]);
+                }
+                return 1;}
+            kontrol=0;
+          
+            if(sayi[k]==1)break;
+
+}    
+k++;
+
+        if(sayi[N-1]==1)return -1;//hiçbir koşul sağlanamadı.
+    }
+    
+}
 void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyenlerMatrisi[N],int durum){
 
-
+    if(celiski==-1){
+        
+        printf("\n---SONUC---\n   Girdiginiz degerler birbiri ile celiskili oldugundan herhangi bir sonuc bulunamamistir.\n\n\n");
+        return -1;
+    }
 
                 if(durum==1){
                     printf("\n");
                     matrisCiz(N,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
-                    printf("\n\n ---- Sonuc basarili bir sekilde hesaplandi ---- \n");
-                    printf("\n ---- Sonuc ---- \n");
+                    printf("\n\n---- Sonuc basarili bir sekilde hesaplandi ---- \n");
+                    printf("\n---- SONUC ---- \n");
                     for (int i = 0; i <N ; ++i) {
-                        printf("%c yolunun yogunlugu = %d \n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
+                        printf("     %c yolunun yogunlugu = %d \n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
 
                     }
-                }else if(durum%5==0){
+                    scanf("%1s",TEMP);
+                    scanf("%1s",TEMP);
+                }else if(durum=11){
+                            
+                   
+                    
+                        matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
+                        printf("\n\n");
+                        
+                      
+                    
 
-
-                    if(N==6){
-                            matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);printf("\nGirdiginiz degerler ile %d adet elamana bağlı olarak sonsuz adet cozum elde edilir.",N-4);return 0;
-                   }else if(N>6){
-
-                        matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);printf("\nYeterli sayida bilinen deger girmediginiz icin sonuc bulunamamistir.");return 0;
-                    }
-                    matrisCiz(N,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
-                    printf("\n");
-
-                    printf("\n ---- Sonuc ---- \n");
-                    printf("Girdiginiz degerler ile %c yoluna baglı olarak sonsuz sayıda cozum bulunmaktadir.\n",bilinmeyenlerMatrisi[durum/5]);
-                    for (int i = 0; i <N ; ++i) {
-                        if(i==durum/5)continue;
-                        if(matris[i][i]==1&&matris[i][durum/5]!=0){
-                            if(matris[i][durum/5]==1){
-                                printf("%c = %d - %c\n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i],bilinmeyenlerMatrisi[durum/5]);
-                                continue;
-                        }else{
-                                printf("%c = %d + %c\n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i],bilinmeyenlerMatrisi[durum/5]);
-                                continue;
+                   int k=0,temp=0;
+                   
+                    for(int i=0;i<R;i++){
+                        if(matris[i][i]!=1)continue;
+                        printf("\n%2c = %2d ",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
+                        for(int j=i+1;j<N;j++){
+                            if(matris[i][j]!=0){
+                                if(matris[i][j]<0) printf(" + %2c ",bilinmeyenlerMatrisi[j]);
+                                if(matris[i][j]>0) printf(" - %2c ",bilinmeyenlerMatrisi[j]);
+                                k++;
                             }
-
+                            
                         }
-
-                        printf("%c = %d\n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
-
+                            if(k==0 && sonucMatrsisi[i]<0){
+                                 
+                    
+                    printf("\n\n---- Yogunluk degeri negatif olamayacagi icin cozum bulunanamaktadır.---\n\n");return -1;
+                    
+                            }
+                        k=0;
                     }
-
-
+                    printf("\n\n");
+                    temp=-1;
+                    for(int i=0;i<R;i++){
+                        if(matris[i][i]!=1)continue;
+                        
+                        for(int j=i+1;j<N;j++){
+                            if(matris[i][j]!=0){
+                                k++;
+                            }
+                        }
+                    if(k==0)continue;
+                        
+                        if(i>0&&k!=0)
+                          printf(" && ");
+                        k=0;
+                          
+                        for(int j=i+1;j<N;j++){
+                            if(matris[i][j]!=0){
+                
+                                if(matris[i][j]<0) printf("-%c",bilinmeyenlerMatrisi[j]);
+                                if(matris[i][j]>0) printf("+%c",bilinmeyenlerMatrisi[j]);
+                               
+                              
+                            }
+                          
+                    }
+                            printf(" < %2d",sonucMatrsisi[i]);
+                }
+                    
+                     int TrueFalse=esitsizlik(R,N,matris,sonucMatrsisi);
+                    if(TrueFalse==1){
+                        printf("\n\n Esitsizliklerini saglayan her deger icin cozum bulunmaktadir.");
+                        
+                    }else printf("\n\n Esitsizlikleri saglanamadıgından hicbir cozum yoktur.");
+                     
+                     scanf("%1s",TEMP);
+                    scanf("%1s",TEMP);
+                   
 
                 }else if(durum==-1){
 
                     printf("\n");
                     matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
-                    printf("\n ---- Sonuc ---- \n");
-                    printf("Girdiginiz degerler celiskili oldugu icin cozum bulunanamaktadır");
-
+                    printf("\n\n---- SONUC ---- \n");
+                    printf("\n---- Girdiginiz degerler celiskili oldugu icin cozum bulunanamaktadır.---\n\n");
+                        
+                    scanf("%1s",TEMP);
+                    scanf("%1s",TEMP);
 
                 }else if(durum==-2){
 
                     printf("\n");
                     matrisCiz(R,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
-                    printf("\n ---- Sonuc ---- \n");
-                    printf("Yogunluk degeri negatif olamayacagi icin cozum bulunanamaktadır");
+                    printf("\n\n---- SONUC ---- \n");
+                    for(int i=0;i<R;i++){
+                        if(matris[i][i]!=1)continue;
+                        printf("\n%2c = %2d ",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
+                        for(int j=i+1;j<N;j++){
+                            if(matris[i][j]!=0){
+                                if(matris[i][j]<0) printf(" + %2c ",bilinmeyenlerMatrisi[j]);
+                                if(matris[i][j]>0) printf(" - %2c ",bilinmeyenlerMatrisi[j]);
+                            } 
+                        }
+                    }
+                    printf("\n---- Yogunluk degeri negatif olamayacagi icin cozum bulunanamaktadır.---\n\n");
 
-
+                        scanf("%1s",TEMP);
+                        scanf("%1s",TEMP);
                 }
 
 
@@ -274,8 +500,8 @@ void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol){
     int girisCikis,yolNum=0;
     while(1){
         printf("\n%c yolu : ",Yoladi);
-        scanf("%s", a);
-        girisCikis=atoi(a);
+        scanf("%s",TEMP);
+        girisCikis=atoi(TEMP);
         if((girisCikis)==1)(*girisSayisi)++;
         else if((girisCikis)==-1)(*cikisSayisi)++;
         else{printf("Lütfen geçerli bir değer giriniz ! Giris icin:1 Cikis icin:-1\n");continue;}
@@ -304,11 +530,11 @@ void yonSorgula(char Yoladi,int *yol){
     char baslangicnoktasi,Yonu;
     while(1) {
         printf("\n%c yolu icin baslangic noktasini giriniz : ", Yoladi);
-        scanf("%s", a);
-        if(strlen(a)>1){
+        scanf("%s",TEMP);
+        if(strlen(TEMP)>1){
             printf("Lütfen geçerli bir baslangic noktasi girin\n");
             continue;}
-        baslangicnoktasi=a[0];
+        baslangicnoktasi=TEMP[0];
         if (Yoladi == 'a' && (baslangicnoktasi != 't' && baslangicnoktasi != 'x')){
             printf("Lütfen geçerli bir baslangic noktasi girin\n");
             continue;}
@@ -332,11 +558,11 @@ void yonSorgula(char Yoladi,int *yol){
     while(1) {
 
         printf("\n%c yolu icin yonu giriniz : ", Yoladi);
-        scanf("%s", a);
-       if(strlen(a)>1){
+        scanf("%s",TEMP);
+       if(strlen(TEMP)>1){
            printf("Lutfen geçerli bir yon girin\n");
         continue;}
-       Yonu=a[0];
+       Yonu=TEMP[0];
         if ((Yoladi == 'a' && baslangicnoktasi == 't' )&& (Yonu != 'x')){
             printf("Lutfen geçerli bir yon girin\n");
             continue;}
@@ -407,6 +633,21 @@ int yonKontrol(int yollar[5][4],int anaYollar[4][4]){
         if(yollar[cYolu][son]==anaYollar[zYolu][son]&&yollar[dYolu][son]==anaYollar[zYolu][son])return 0;
 
     }
+    if(haritaSecimi==1){
+
+        if(yollar[aYolu][bas]==anaYollar[tYolu][bas]&&yollar[aYolu][bas]==yollar[cYolu][bas])return 2;
+        if(yollar[aYolu][bas]==anaYollar[xYolu][bas]&&yollar[bYolu][bas]==anaYollar[xYolu][bas])return 2;
+        if(yollar[dYolu][bas]==anaYollar[yYolu][bas]&&yollar[bYolu][bas]==anaYollar[yYolu][bas])return 2;
+        if(yollar[cYolu][bas]==anaYollar[zYolu][bas]&&yollar[dYolu][bas]==anaYollar[zYolu][bas])return 2;
+
+
+    }else{
+        if(yollar[aYolu][bas]==anaYollar[tYolu][bas]&&yollar[eYolu][bas]==yollar[cYolu][bas])return 2;
+        if(yollar[aYolu][bas]==anaYollar[xYolu][bas]&&yollar[bYolu][bas]==anaYollar[xYolu][bas])return 2;
+        if(yollar[dYolu][bas]==anaYollar[yYolu][bas]&&yollar[bYolu][bas]==yollar[eYolu][bas])return 2;
+        if(yollar[cYolu][bas]==anaYollar[zYolu][bas]&&yollar[dYolu][bas]==anaYollar[zYolu][bas])return 2;
+
+    }
 
     return 1;
 
@@ -416,8 +657,8 @@ void aracSayisiAl(char yolAdi,int *aracsayisi,int * bilinmeyenSayisi){
 
     while(1) {
         printf("\n%c yolundaki arac yogunlugunu giriniz(bilgi yok ise : -1 girin) : ", yolAdi);
-        scanf("%s", a);
-        *aracsayisi = atoi(a);
+        scanf("%s",TEMP);
+        *aracsayisi = atoi(TEMP);
         if (*aracsayisi == 0){
             printf("Lutfen gecerli bir arac yogunlugu girin:\n");
             continue;
@@ -437,10 +678,162 @@ void matrisSifirla(int R,int N,int matris[R][N],int sonucMatrisi[R]){
         sonucMatrisi[i]=0;
     }
 }
+int celiskiKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]){
+    int son,toplam=0;
+    if(dugumNo==5)son=0;
+    else son=dugumNo;
+    
+    if(haritaSecimi==1){
+        
+        if(dugumNo==1){
+            if(yollar[aYolu][son]==son)toplam-=yollar[aYolu][aracYogunlugu];
+            else toplam+=yollar[aYolu][aracYogunlugu];
+            
+             if(yollar[cYolu][son]==son)toplam-=yollar[cYolu][aracYogunlugu];
+            else toplam+=yollar[cYolu][aracYogunlugu];
+            
+             if(anaYollar[tYolu][son]==son)toplam-=anaYollar[tYolu][aracYogunlugu];
+            else toplam+=anaYollar[tYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+        }else if(dugumNo==2){
+            if(yollar[aYolu][son]==son)toplam-=yollar[aYolu][aracYogunlugu];
+            else toplam+=yollar[aYolu][aracYogunlugu];
+            
+             if(yollar[bYolu][son]==son)toplam-=yollar[bYolu][aracYogunlugu];
+            else toplam+=yollar[bYolu][aracYogunlugu];
+            
+             if(anaYollar[xYolu][son]==son)toplam-=anaYollar[xYolu][aracYogunlugu];
+            else toplam+=anaYollar[xYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }else if(dugumNo==3){
+            if(yollar[dYolu][son]==son)toplam-=yollar[dYolu][aracYogunlugu];
+            else toplam+=yollar[dYolu][aracYogunlugu];
+            
+             if(yollar[bYolu][son]==son)toplam-=yollar[bYolu][aracYogunlugu];
+            else toplam+=yollar[bYolu][aracYogunlugu];
+            
+             if(anaYollar[yYolu][son]==son)toplam-=anaYollar[yYolu][aracYogunlugu];
+            else toplam+=anaYollar[yYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }
+        else if(dugumNo==4){
+            if(yollar[dYolu][son]==son)toplam-=yollar[dYolu][aracYogunlugu];
+            else toplam+=yollar[dYolu][aracYogunlugu];
+            
+             if(yollar[cYolu][son]==son)toplam-=yollar[cYolu][aracYogunlugu];
+            else toplam+=yollar[cYolu][aracYogunlugu];
+            
+             if(anaYollar[zYolu][son]==son)toplam-=anaYollar[zYolu][aracYogunlugu];
+            else toplam+=anaYollar[zYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }
+        else if(dugumNo==5){
+            if(anaYollar[tYolu][son]==son)toplam-=anaYollar[tYolu][aracYogunlugu];
+            else toplam+=anaYollar[tYolu][aracYogunlugu];
+            
+             if(anaYollar[xYolu][son]==son)toplam-=anaYollar[xYolu][aracYogunlugu];
+            else toplam+=anaYollar[xYolu][aracYogunlugu];
+            
+             if(anaYollar[yYolu][son]==son)toplam-=anaYollar[yYolu][aracYogunlugu];
+            else toplam+=anaYollar[yYolu][aracYogunlugu];
+            
+            if(anaYollar[zYolu][son]==son)toplam-=anaYollar[zYolu][aracYogunlugu];
+            else toplam+=anaYollar[zYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }
+        
+    }else{
+        
+        if(dugumNo==1){
+            if(yollar[aYolu][son]==son)toplam-=yollar[aYolu][aracYogunlugu];
+            else toplam+=yollar[aYolu][aracYogunlugu];
+            
+             if(yollar[cYolu][son]==son)toplam-=yollar[cYolu][aracYogunlugu];
+            else toplam+=yollar[cYolu][aracYogunlugu];
+            
+            if(yollar[eYolu][son]==son)toplam-=yollar[eYolu][aracYogunlugu];
+            else toplam+=yollar[eYolu][aracYogunlugu];
+            
+             if(anaYollar[tYolu][son]==son)toplam-=anaYollar[tYolu][aracYogunlugu];
+            else toplam+=anaYollar[tYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+        }else if(dugumNo==2){
+            if(yollar[aYolu][son]==son)toplam-=yollar[aYolu][aracYogunlugu];
+            else toplam+=yollar[aYolu][aracYogunlugu];
+            
+             if(yollar[bYolu][son]==son)toplam-=yollar[bYolu][aracYogunlugu];
+            else toplam+=yollar[bYolu][aracYogunlugu];
+            
+             if(anaYollar[xYolu][son]==son)toplam-=anaYollar[xYolu][aracYogunlugu];
+            else toplam+=anaYollar[xYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }else if(dugumNo==3){
+            if(yollar[dYolu][son]==son)toplam-=yollar[dYolu][aracYogunlugu];
+            else toplam+=yollar[dYolu][aracYogunlugu];
+            
+             if(yollar[bYolu][son]==son)toplam-=yollar[bYolu][aracYogunlugu];
+            else toplam+=yollar[bYolu][aracYogunlugu];
+            
+            if(yollar[eYolu][son]==son)toplam-=yollar[eYolu][aracYogunlugu];
+            else toplam+=yollar[eYolu][aracYogunlugu];
+            
+             if(anaYollar[yYolu][son]==son)toplam-=anaYollar[yYolu][aracYogunlugu];
+            else toplam+=anaYollar[yYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }
+        else if(dugumNo==4){
+            if(yollar[dYolu][son]==son)toplam-=yollar[dYolu][aracYogunlugu];
+            else toplam+=yollar[dYolu][aracYogunlugu];
+            
+             if(yollar[cYolu][son]==son)toplam-=yollar[cYolu][aracYogunlugu];
+            else toplam+=yollar[cYolu][aracYogunlugu];
+            
+             if(anaYollar[zYolu][son]==son)toplam-=anaYollar[zYolu][aracYogunlugu];
+            else toplam+=anaYollar[zYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }
+        else if(dugumNo==5){
+            if(anaYollar[tYolu][son]==son)toplam-=anaYollar[tYolu][aracYogunlugu];
+            else toplam+=anaYollar[tYolu][aracYogunlugu];
+            
+             if(anaYollar[xYolu][son]==son)toplam-=anaYollar[xYolu][aracYogunlugu];
+            else toplam+=anaYollar[xYolu][aracYogunlugu];
+            
+             if(anaYollar[yYolu][son]==son)toplam-=anaYollar[yYolu][aracYogunlugu];
+            else toplam+=anaYollar[yYolu][aracYogunlugu];
+            
+            if(anaYollar[zYolu][son]==son)toplam-=anaYollar[zYolu][aracYogunlugu];
+            else toplam+=anaYollar[zYolu][aracYogunlugu];
+            
+            if(toplam!=0)return -1;
+            
+        }
+        
+    }
+    
+}
 void matrisOlustur(int R,int N,int matris[R][N],int sonucMatrisi[R],char bilinmeyenlerMatrisi[N],int yollar[5][4],int anaYollar[4][4]){
     int k=0;
     for (int i = 1; i <6 ; ++i) {
-        if(dugumKontrol(i,yollar,anaYollar)==0)continue;
+        if(dugumKontrol(i,yollar,anaYollar)==0){
+            celiski=celiskiKontrol(i,yollar,anaYollar);continue;
+        }
         dugumCoz(N,i,matris[k],&sonucMatrisi[k],bilinmeyenlerMatrisi,yollar,anaYollar);
         k++;
         if(k==R)break;
@@ -530,9 +923,9 @@ void gaussAdimYazici(int R,int N,int matris[R][N],int sonucMatrisi[R],int durum,
 void gauss(int R,int N,int matris[R][N],int sonucMatrisi[R]){
 
     int temp;float a;
-if(N>5)N=5;
-    for (int i = 0; i <N ; ++i) {
 
+    for (int i = 0; i <R ; ++i) {
+        
         if(matris[i][i]!=0){
             a=(float)1/matris[i][i];
             for (int j = 0; j <N ; ++j) {
@@ -598,7 +991,7 @@ if(N>5)N=5;
     for (int n = 0; n <R-1 ; ++n) {
 
 
-        for (int i = n+1; i <N ; ++i) {
+        for (int i = n+1; i <R ; ++i) {
             if(matris[n][i]==0)continue;
             if(matris[i][i]==0)continue;
             a=matris[n][i];
@@ -1073,7 +1466,7 @@ void allegroGiris(){
 
         al_show_native_message_box(display, NULL, "HATA", "Allegro baslatilamadi !", NULL,
                                    ALLEGRO_MESSAGEBOX_ERROR);
-        return -1;
+    
     }
 
     //ALLEGRO_DISPLAY *al_create_display(int w, int h)
@@ -1088,7 +1481,7 @@ void allegroGiris(){
 
     al_clear_to_color(al_map_rgb(255, 255, 255));     //void al_clear_to_color(ALLEGRO_COLOR color)
 
-    ALLEGRO_FONT *font24 = al_load_font("/home/tuhage/CLionProjects/LabProje/BalooBhai-Regular.ttf", 36,
+    ALLEGRO_FONT *font24 = al_load_font("BalooBhai-Regular.ttf", 36,
                                         0); //ALLEGRO_FONT *al_load_font(char const *filename, int size, int flags)
 
     al_draw_text(font24, al_map_rgb(230, 24, 45), 160, 0, 0, "HARİTA-1"); /*void al_draw_text(const ALLEGRO_FONT *font,ALLEGRO_COLOR color, float x, float y, int flags,char const *text)
@@ -1099,17 +1492,17 @@ void allegroGiris(){
                                                                                                 ALLEGRO_ALIGN_RIGHT - Draw the text right-aligned to the given position.
                                                                                      */
     al_draw_text(font24, al_map_rgb(230, 24, 45), 568, 0, 0, "HARİTA-2");
-    ALLEGRO_BITMAP *image1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map.png");
-    ALLEGRO_BITMAP *image2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map2.png");
+    ALLEGRO_BITMAP *image1 = al_load_bitmap("map.png");
+    ALLEGRO_BITMAP *image2 = al_load_bitmap("map2.png");
     al_draw_bitmap(image1, 50, 50, 0);
     al_draw_bitmap(image2, 465, 50, 0);
     al_flip_display();
 
 }
 void allegroHarita(){
-    ALLEGRO_BITMAP *harita;ALLEGRO_FONT *font24 = al_load_font("/home/tuhage/CLionProjects/LabProje/BalooBhai-Regular.ttf", 36, 0);
-    if(haritaSecimi==1) harita= al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map.png");
-    else harita = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map2.png");
+    ALLEGRO_BITMAP *harita;ALLEGRO_FONT *font24 = al_load_font("BalooBhai-Regular.ttf", 36, 0);
+    if(haritaSecimi==1) harita= al_load_bitmap("map.png");
+    else harita = al_load_bitmap("map2.png");
     al_clear_to_color(al_map_rgb(255, 255, 255));
     al_draw_bitmap(harita, 261, 60.5, 0);
     if(haritaSecimi==1)
@@ -1140,63 +1533,63 @@ void allegroYonleriCiz(int aSon,int bSon,int cSon,int dSon,int eSon,int tSon,int
     ALLEGRO_BITMAP *zYon1,*zYon2,*zYon3;
     float zX1,zX2,zX3,zY1,zY2,zY3;
 
-    ALLEGRO_BITMAP *harita;ALLEGRO_FONT *font24 = al_load_font("/home/tuhage/CLionProjects/LabProje/BalooBhai-Regular.ttf", 36, 0);
-    if(haritaSecimi==1) harita= al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map.png");
-    else harita = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/map2.png");
-    ALLEGRO_BITMAP *a1_12 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/a1-12-x85y122.png");
-    ALLEGRO_BITMAP *a2_12 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/a2-12-x99y99.png");
-    ALLEGRO_BITMAP *a3_12 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/a3-12-x112y84.png");
-    ALLEGRO_BITMAP *a1_21 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/a1-21-120_84.png");
-    ALLEGRO_BITMAP *a2_21 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/a2-21-101_99.png");
-    ALLEGRO_BITMAP *a3_21 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/a3-21-83_128.png");
-    ALLEGRO_BITMAP *b23_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/b23_1_201_83.png");
-    ALLEGRO_BITMAP *b23_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/b23_2_232_100.png");
-    ALLEGRO_BITMAP *b23_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/b23_3_252_127.png");
-    ALLEGRO_BITMAP *b32_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/b32_1_253_126.png");
-    ALLEGRO_BITMAP *b32_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/b32_2_227_101.png");
-    ALLEGRO_BITMAP *b32_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/b32_3_200_83.png");
-    ALLEGRO_BITMAP *c14_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/c_1_85_201.png");
-    ALLEGRO_BITMAP *c14_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/c_2_101_232.png");
-    ALLEGRO_BITMAP *c14_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/c_3_128_252.png");
-    ALLEGRO_BITMAP *c41_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/c41_1_125_255.png");
-    ALLEGRO_BITMAP *c41_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/c41_2_105_225.png");
-    ALLEGRO_BITMAP *c41_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/c41_3_89_196.png");
-    ALLEGRO_BITMAP *d34_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/d34_1_254_177.png");
-    ALLEGRO_BITMAP *d34_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/d34_2_234_214.png");
-    ALLEGRO_BITMAP *d34_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/d34_3_207_240.png");
-    ALLEGRO_BITMAP *d43_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/d43_1_205_244.png");
-    ALLEGRO_BITMAP *d43_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/d43_2_233_213.png");
-    ALLEGRO_BITMAP *d43_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/d43_3_205_183.png");
-    ALLEGRO_BITMAP *e13_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/e13_1_142_168.png");
-    ALLEGRO_BITMAP *e13_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/e13_2_166_168.png");
-    ALLEGRO_BITMAP *e13_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/e13_3_188_168.png");
-    ALLEGRO_BITMAP *e31_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/e31_1_188_168.png");
-    ALLEGRO_BITMAP *e31_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/e31_2_166_168.png");
-    ALLEGRO_BITMAP *e31_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/e31_3_142_168.png");
-    ALLEGRO_BITMAP *t01_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/t01_1_0_165.png");
-    ALLEGRO_BITMAP *t01_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/t01_2_22_165.png");
-    ALLEGRO_BITMAP *t01_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/t01_3_46_165.png");
-    ALLEGRO_BITMAP *t10_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/t10_1_46_165.png");
-    ALLEGRO_BITMAP *t10_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/t10_2_22_165.png");
-    ALLEGRO_BITMAP *t10_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/t10_3_0_165.png");
-    ALLEGRO_BITMAP *x02_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/x02_1_0_166.png");
-    ALLEGRO_BITMAP *x02_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/x02_2_22_166.png");
-    ALLEGRO_BITMAP *x02_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/x02_3_43_166.png");
-    ALLEGRO_BITMAP *x20_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/x20_1_0_166.png");
-    ALLEGRO_BITMAP *x20_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/x20_2_22_166.png");
-    ALLEGRO_BITMAP *x20_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/x20_3_43_166.png");
-    ALLEGRO_BITMAP *y03_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/y03_1_332_165.png");
-    ALLEGRO_BITMAP *y03_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/y03_2_310_165.png");
-    ALLEGRO_BITMAP *y03_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/y03_3_289_165.png");
-    ALLEGRO_BITMAP *y30_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/y30_1_289_165.png");
-    ALLEGRO_BITMAP *y30_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/y30_2_310_165.png");
-    ALLEGRO_BITMAP *y30_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/y30_3_332_165.png");
-    ALLEGRO_BITMAP *z04_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/z04_1_333_166.png");
-    ALLEGRO_BITMAP *z04_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/z04_2_312_166.png");
-    ALLEGRO_BITMAP *z04_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/z04_3_290_166.png");
-    ALLEGRO_BITMAP *z40_1 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/z40_1_290_166.png");
-    ALLEGRO_BITMAP *z40_2 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/z40_2_312_166.png");
-    ALLEGRO_BITMAP *z40_3 = al_load_bitmap("/home/tuhage/CLionProjects/LabProje/z40_3_333_166.png");
+    ALLEGRO_BITMAP *harita;ALLEGRO_FONT *font24 = al_load_font("BalooBhai-Regular.ttf", 36, 0);
+    if(haritaSecimi==1) harita= al_load_bitmap("map.png");
+    else harita = al_load_bitmap("map2.png");
+    ALLEGRO_BITMAP *a1_12 = al_load_bitmap("a1-12-x85y122.png");
+    ALLEGRO_BITMAP *a2_12 = al_load_bitmap("a2-12-x99y99.png");
+    ALLEGRO_BITMAP *a3_12 = al_load_bitmap("a3-12-x112y84.png");
+    ALLEGRO_BITMAP *a1_21 = al_load_bitmap("a1-21-120_84.png");
+    ALLEGRO_BITMAP *a2_21 = al_load_bitmap("a2-21-101_99.png");
+    ALLEGRO_BITMAP *a3_21 = al_load_bitmap("a3-21-83_128.png");
+    ALLEGRO_BITMAP *b23_1 = al_load_bitmap("b23_1_201_83.png");
+    ALLEGRO_BITMAP *b23_2 = al_load_bitmap("b23_2_232_100.png");
+    ALLEGRO_BITMAP *b23_3 = al_load_bitmap("b23_3_252_127.png");
+    ALLEGRO_BITMAP *b32_1 = al_load_bitmap("b32_1_253_126.png");
+    ALLEGRO_BITMAP *b32_2 = al_load_bitmap("b32_2_227_101.png");
+    ALLEGRO_BITMAP *b32_3 = al_load_bitmap("b32_3_200_83.png");
+    ALLEGRO_BITMAP *c14_1 = al_load_bitmap("c_1_85_201.png");
+    ALLEGRO_BITMAP *c14_2 = al_load_bitmap("c_2_101_232.png");
+    ALLEGRO_BITMAP *c14_3 = al_load_bitmap("c_3_128_252.png");
+    ALLEGRO_BITMAP *c41_1 = al_load_bitmap("c41_1_125_255.png");
+    ALLEGRO_BITMAP *c41_2 = al_load_bitmap("c41_2_105_225.png");
+    ALLEGRO_BITMAP *c41_3 = al_load_bitmap("c41_3_89_196.png");
+    ALLEGRO_BITMAP *d34_1 = al_load_bitmap("d34_1_254_177.png");
+    ALLEGRO_BITMAP *d34_2 = al_load_bitmap("d34_2_234_214.png");
+    ALLEGRO_BITMAP *d34_3 = al_load_bitmap("d34_3_207_240.png");
+    ALLEGRO_BITMAP *d43_1 = al_load_bitmap("d43_1_205_244.png");
+    ALLEGRO_BITMAP *d43_2 = al_load_bitmap("d43_2_233_213.png");
+    ALLEGRO_BITMAP *d43_3 = al_load_bitmap("d43_3_205_183.png");
+    ALLEGRO_BITMAP *e13_1 = al_load_bitmap("e13_1_142_168.png");
+    ALLEGRO_BITMAP *e13_2 = al_load_bitmap("e13_2_166_168.png");
+    ALLEGRO_BITMAP *e13_3 = al_load_bitmap("e13_3_188_168.png");
+    ALLEGRO_BITMAP *e31_1 = al_load_bitmap("e31_1_188_168.png");
+    ALLEGRO_BITMAP *e31_2 = al_load_bitmap("e31_2_166_168.png");
+    ALLEGRO_BITMAP *e31_3 = al_load_bitmap("e31_3_142_168.png");
+    ALLEGRO_BITMAP *t01_1 = al_load_bitmap("t01_1_0_165.png");
+    ALLEGRO_BITMAP *t01_2 = al_load_bitmap("t01_2_22_165.png");
+    ALLEGRO_BITMAP *t01_3 = al_load_bitmap("t01_3_46_165.png");
+    ALLEGRO_BITMAP *t10_1 = al_load_bitmap("t10_1_46_165.png");
+    ALLEGRO_BITMAP *t10_2 = al_load_bitmap("t10_2_22_165.png");
+    ALLEGRO_BITMAP *t10_3 = al_load_bitmap("t10_3_0_165.png");
+    ALLEGRO_BITMAP *x02_1 = al_load_bitmap("x02_1_0_166.png");
+    ALLEGRO_BITMAP *x02_2 = al_load_bitmap("x02_2_22_166.png");
+    ALLEGRO_BITMAP *x02_3 = al_load_bitmap("x02_3_43_166.png");
+    ALLEGRO_BITMAP *x20_1 = al_load_bitmap("x20_1_0_166.png");
+    ALLEGRO_BITMAP *x20_2 = al_load_bitmap("x20_2_22_166.png");
+    ALLEGRO_BITMAP *x20_3 = al_load_bitmap("x20_3_43_166.png");
+    ALLEGRO_BITMAP *y03_1 = al_load_bitmap("y03_1_332_165.png");
+    ALLEGRO_BITMAP *y03_2 = al_load_bitmap("y03_2_310_165.png");
+    ALLEGRO_BITMAP *y03_3 = al_load_bitmap("y03_3_289_165.png");
+    ALLEGRO_BITMAP *y30_1 = al_load_bitmap("y30_1_289_165.png");
+    ALLEGRO_BITMAP *y30_2 = al_load_bitmap("y30_2_310_165.png");
+    ALLEGRO_BITMAP *y30_3 = al_load_bitmap("y30_3_332_165.png");
+    ALLEGRO_BITMAP *z04_1 = al_load_bitmap("z04_1_333_166.png");
+    ALLEGRO_BITMAP *z04_2 = al_load_bitmap("z04_2_312_166.png");
+    ALLEGRO_BITMAP *z04_3 = al_load_bitmap("z04_3_290_166.png");
+    ALLEGRO_BITMAP *z40_1 = al_load_bitmap("z40_1_290_166.png");
+    ALLEGRO_BITMAP *z40_2 = al_load_bitmap("z40_2_312_166.png");
+    ALLEGRO_BITMAP *z40_3 = al_load_bitmap("z40_3_333_166.png");
 
 
     if(haritaSecimi==1){
@@ -1599,7 +1992,7 @@ void allegroYonleriCiz(int aSon,int bSon,int cSon,int dSon,int eSon,int tSon,int
 
 
     if (haritaSecimi==1) {
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 10; ++i) {
 
             delay(400000);
             al_flip_display();
@@ -1655,7 +2048,7 @@ void allegroYonleriCiz(int aSon,int bSon,int cSon,int dSon,int eSon,int tSon,int
 
 
     }else{
-        for (int i = 0; i < 50; ++i) {
+        for (int i = 0; i < 10; ++i) {
 
             delay(400000);
             al_flip_display();
