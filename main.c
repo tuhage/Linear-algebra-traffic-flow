@@ -43,6 +43,8 @@ void yonSorgula(char Yoladi,int *yol);
 
 int yonKontrol(int yollar[5][4],int anaYollar[4][4]);
 
+int celiskiKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]);
+
 void GirisCikisAl(char Yoladi,int* girisSayisi,int* cikisSayisi,int* anayol);
 
 void isimleriGir(int a[5][4],int b[4][4]);
@@ -53,8 +55,6 @@ void dugumCoz(int N,int dugumNo,int *matrisSatir,int *matrisSatirSonuc,char bili
 int dugumKontrol(int dugumNo,int yollar[5][4],int anaYollar[4][4]);
 
 int indexBul(const char *dizi,int N,int aranan);
-
-int esitsizlik(int R,int N,int matris[R][N],int sonucMatrisi[R]);
 
 void delay(unsigned int mseconds);
 
@@ -127,6 +127,7 @@ int main(void) {
 
        allegroYonleriCiz(yollar[aYolu][son],yollar[bYolu][son],yollar[cYolu][son],yollar[dYolu][son],yollar[eYolu][son],anaYollar[tYolu][son],anaYollar[xYolu][son],anaYollar[yYolu][son],anaYollar[zYolu][son]);
         while(bilinmeyenSayisi<1){
+            bilinmeyenSayisi=0;
         if (haritaSecimi == 1) {
             aracSayisiAl((char) yollar[aYolu][isim], &yollar[aYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) yollar[bYolu][isim], &yollar[bYolu][aracYogunlugu], &bilinmeyenSayisi);
@@ -136,7 +137,7 @@ int main(void) {
             aracSayisiAl((char) anaYollar[xYolu][isim], &anaYollar[xYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) anaYollar[yYolu][isim], &anaYollar[yYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) anaYollar[zYolu][isim], &anaYollar[zYolu][aracYogunlugu], &bilinmeyenSayisi);
-
+            if(bilinmeyenSayisi==8)bilinmeyenSayisi=-1;
         } else {
 
             aracSayisiAl((char) yollar[aYolu][isim], &yollar[aYolu][aracYogunlugu], &bilinmeyenSayisi);
@@ -148,14 +149,16 @@ int main(void) {
             aracSayisiAl((char) anaYollar[xYolu][isim], &anaYollar[xYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) anaYollar[yYolu][isim], &anaYollar[yYolu][aracYogunlugu], &bilinmeyenSayisi);
             aracSayisiAl((char) anaYollar[zYolu][isim], &anaYollar[zYolu][aracYogunlugu], &bilinmeyenSayisi);
-
+            if(bilinmeyenSayisi==9)bilinmeyenSayisi=-1;
 
         }
-        if(bilinmeyenSayisi==0)printf("\nLutfen en az bir adet bilinmeyen girin\n");
+        if(bilinmeyenSayisi==0)printf("\nLutfen en az bir adet bilinmeyen girin.\n");
+        if(bilinmeyenSayisi==-1)printf("\nLutfen en az bir adet bilinen girin.\n");
         }
 
-        printf("\n");
-
+        
+        printf("\n\n\n--- Yogunluk degerleri basarili bir sekilde alindi---\n\n\n...Matris olusturuluyor...\n\n\n");
+       
         int N = bilinmeyenSayisi,R=5;
         int matris[R][N], sonucMatrisi[R];
         char bilinmeyenlerMatrisi[N];
@@ -200,173 +203,7 @@ int sonucKontrol(int R,int N,int matris[R][N],int sonucMatrsisi[R]){
 
 
 }
-int esitsizlik(int R,int N,int matris[R][N],int sonucMatrisi[R]){
-    
-    int sayi[N],toplam=0,max=sonucMatrisi[0],k=0,kontrol=0;
-    printf("\n");
-   for(int i=0;i<R;i++){
-      matris[i][i]=0;
-    }
-    
-    for(int i=1;i<R;i++){
-        if(sonucMatrisi[i]>max){
-            max=sonucMatrisi[i];
-        }
-        
-    }
-    
-    
 
-    while(1){
-        
-        for(int i=0;i<N;i++){     
-            sayi[i]=i%4+1;
-        }
-        while(1){
-            
-            sayi[k]++;
-for(int i=0;i<R;i++){
-    
-    
-    for(int j=0;j<N;j++){
-        
-        toplam+=matris[i][j]*sayi[j];
-    }
-    if(toplam<=sonucMatrisi[i]){
-        kontrol++;
-    }
-    toplam=0;
-}
-            if(kontrol==R){
-                for(int i=0;i<N;i++){
-                    
-                }
-                return 1;}
-            kontrol=0;
-           
-            if(sayi[k]>max*2)break;
-
-}    
-k++;
-
-        if(sayi[N-1]>max*2)break;//hiçbir koşul sağlanamadı.
-    }
-    
-    k=0;
-    
-     while(1){
-        
-        for(int i=0;i<N;i++){     
-            sayi[i]=N-i;
-        }
-        while(1){
-             printf("%d_2_%d\n",sayi[k],k);
-            sayi[k]++;
-for(int i=0;i<R;i++){
-    
-    
-    for(int j=0;j<N;j++){
-        
-        toplam+=matris[i][j]*sayi[j];
-    }
-    if(toplam<=sonucMatrisi[i]){
-        kontrol++;
-    }
-    toplam=0;
-}
-            if(kontrol==R){
-                for(int i=0;i<N;i++){
-                    printf("%d -- %d\n",i+1,sayi[i]);
-                }
-                return 1;}
-            kontrol=0;
-            printf("%d^2^%d\n",sayi[k],k);
-            if(sayi[k]>max*2)break;
-
-}    
-k++;
-
-        if(sayi[N-1]>max*2)break;//hiçbir koşul sağlanamadı.
-    }
-    
-    
-    
-    
-     k=0;
-    
-     while(1){
-        
-        for(int i=0;i<N;i++){     
-            sayi[i]=(max*2)-i;
-        }
-        while(1){
-             printf("%d_3_%d\n",sayi[k],k);
-            sayi[k]--;
-for(int i=0;i<R;i++){
-    
-    
-    for(int j=0;j<N;j++){
-        
-        toplam+=matris[i][j]*sayi[j];
-    }
-    if(toplam<=sonucMatrisi[i]){
-        kontrol++;
-    }
-    toplam=0;
-}
-            if(kontrol==R){
-                for(int i=0;i<N;i++){
-                    printf("%d -- %d\n",i+1,sayi[i]);
-                }
-                return 1;}
-            kontrol=0;
-          
-            if(sayi[k]==1)break;
-
-}    
-k++;
-
-        if(sayi[N-1]==1)break;//hiçbir koşul sağlanamadı.
-    }
-     
-     k=0;
-    
-     while(1){
-        
-        for(int i=0;i<N;i++){     
-            sayi[i]=(max*2)+i;
-        }
-        while(1){
-             printf("%d_4_%d\n",sayi[k],k);
-            sayi[k]--;
-for(int i=0;i<R;i++){
-    
-    
-    for(int j=0;j<N;j++){
-        
-        toplam+=matris[i][j]*sayi[j];
-    }
-    if(toplam<=sonucMatrisi[i]){
-        kontrol++;
-    }
-    toplam=0;
-}
-            if(kontrol==R){
-                for(int i=0;i<N;i++){
-                    printf("%d -- %d\n",i+1,sayi[i]);
-                }
-                return 1;}
-            kontrol=0;
-          
-            if(sayi[k]==1)break;
-
-}    
-k++;
-
-        if(sayi[N-1]==1)return -1;//hiçbir koşul sağlanamadı.
-    }
-    
-}
 void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyenlerMatrisi[N],int durum){
 
     if(celiski==-1){
@@ -379,7 +216,7 @@ void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyen
                     printf("\n");
                     matrisCiz(N,N,matris,sonucMatrsisi,bilinmeyenlerMatrisi);
                     printf("\n\n---- Sonuc basarili bir sekilde hesaplandi ---- \n");
-                    printf("\n---- SONUC ---- \n");
+                    printf("\n        ---- SONUC ----                 \n\n");
                     for (int i = 0; i <N ; ++i) {
                         printf("     %c yolunun yogunlugu = %d \n",bilinmeyenlerMatrisi[i],sonucMatrsisi[i]);
 
@@ -436,8 +273,8 @@ void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyen
                         for(int j=i+1;j<N;j++){
                             if(matris[i][j]!=0){
                 
-                                if(matris[i][j]<0) printf("-%c",bilinmeyenlerMatrisi[j]);
-                                if(matris[i][j]>0) printf("+%c",bilinmeyenlerMatrisi[j]);
+                                if(matris[i][j]<0) printf(" -%c",bilinmeyenlerMatrisi[j]);
+                                if(matris[i][j]>0) printf(" +%c",bilinmeyenlerMatrisi[j]);
                                
                               
                             }
@@ -446,11 +283,7 @@ void sonucuYaz(int R,int N,int matris[R][N],int sonucMatrsisi[R],char bilinmeyen
                             printf(" < %2d",sonucMatrsisi[i]);
                 }
                     
-                     int TrueFalse=esitsizlik(R,N,matris,sonucMatrsisi);
-                    if(TrueFalse==1){
-                        printf("\n\n Esitsizliklerini saglayan her deger icin cozum bulunmaktadir.");
-                        
-                    }else printf("\n\n Esitsizlikleri saglanamadıgından hicbir cozum yoktur.");
+                      printf("\nEsitsizliklerini saglayan her deger icin cozum bulunmaktadir.");
                      
                      scanf("%1s",TEMP);
                     scanf("%1s",TEMP);
@@ -659,7 +492,7 @@ void aracSayisiAl(char yolAdi,int *aracsayisi,int * bilinmeyenSayisi){
         printf("\n%c yolundaki arac yogunlugunu giriniz(bilgi yok ise : -1 girin) : ", yolAdi);
         scanf("%s",TEMP);
         *aracsayisi = atoi(TEMP);
-        if (*aracsayisi == 0){
+        if (*aracsayisi == 0 || *aracsayisi<-1){
             printf("Lutfen gecerli bir arac yogunlugu girin:\n");
             continue;
         }
@@ -1449,29 +1282,10 @@ void allegroGiris(){
 
 
     if (!al_init()) {
-
-        /*int al_show_native_message_box(ALLEGRO_DISPLAY *display,* char const *title, char const *heading, char const *text,char const *buttons, int flags)*/
-
-        /*The flags available are:
-              ALLEGRO_MESSAGEBOX_WARN
-                The message is a warning. This may cause a different icon (or other effects).
-              ALLEGRO_MESSAGEBOX_ERROR
-                The message is an error.
-              ALLEGRO_MESSAGEBOX_QUESTION
-                The message is a question.
-              ALLEGRO_MESSAGEBOX_OK_CANCEL
-                Display a cancel button alongside the "OK" button. Ignored if buttons is not NULL.
-              ALLEGRO_MESSAGEBOX_YES_NO
-                Display Yes/No buttons instead of the "OK" button. Ignored if buttons is not NULL. */
-
         al_show_native_message_box(display, NULL, "HATA", "Allegro baslatilamadi !", NULL,
                                    ALLEGRO_MESSAGEBOX_ERROR);
-    
     }
 
-    //ALLEGRO_DISPLAY *al_create_display(int w, int h)
-
-    //al_set_new_display_flags(ALLEGRO_RESIZABLE);//Sets various flags to be used when creating new displays on the calling thread. flags is a bitfield containing any reasonable combination of the following:
     display = al_create_display(w, h);
 
     al_init_font_addon(); //font addon başlatıcı
@@ -1992,7 +1806,7 @@ void allegroYonleriCiz(int aSon,int bSon,int cSon,int dSon,int eSon,int tSon,int
 
 
     if (haritaSecimi==1) {
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 20; ++i) {
 
             delay(400000);
             al_flip_display();
@@ -2048,7 +1862,7 @@ void allegroYonleriCiz(int aSon,int bSon,int cSon,int dSon,int eSon,int tSon,int
 
 
     }else{
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 20; ++i) {
 
             delay(400000);
             al_flip_display();
